@@ -10,4 +10,6 @@ public abstract class Game {
 
     public abstract String getDeckID();
 
+    public abstract String drawCard(int number);
+
 }
