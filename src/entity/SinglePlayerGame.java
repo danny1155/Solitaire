@@ -1,4 +1,4 @@
-package src.entity;
+package entity;
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,7 +25,7 @@ public class SinglePlayerGame extends Game {
     @Override
     public void setUpGame() {
         String[] deckResponse;
-        HashMap deck = new HashMap<String, String>();
+        HashMap<String, String> deck = new HashMap<>();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://www.deckofcardsapi.com/api/deck/new/"))
                 .method("GET", HttpRequest.BodyPublishers.noBody())
@@ -39,12 +39,19 @@ public class SinglePlayerGame extends Game {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        deckResponse = response.body().split(",");
+        deckResponse = response.body().substring(1,response.body().length() - 1).split(", ");
         for (String pair : deckResponse) {
             String[] parameter = pair.split(": ");
             deck.put(parameter[0], parameter[1]);
         }
-        deckID = (String) deck.get("deck_id");
+        deckID = deck.get("\"deck_id\"");
+        System.out.println(deckID);
+
+        /*HttpRequest request1 = HttpRequest.newBuilder()
+                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID +"/shuffle/?deck_count=1"))
+                        .method("GET", HttpRequest.BodyPublishers.noBody())
+                        .build();*/
+
     }
 
     public String drawCard(int number) {

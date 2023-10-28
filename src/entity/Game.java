@@ -1,11 +1,13 @@
-package src.entity;
+package entity;
 
-abstract class Game {
+public abstract class Game {
     private boolean legalPlacement;
     private boolean paused;
 
     public abstract void pauseGame();
 
     public abstract void setUpGame();
+
+    public abstract String getDeckID();
 
 }
