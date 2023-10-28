@@ -15,6 +15,8 @@ public class SinglePlayerGame extends Game {
     private boolean paused;
     private GameState gameState;
     private String deckID;
+    private String shownCards;
+    private String hiddenCards;
     public SinglePlayerGame() {
         this.legalPlacement = false;
         this.paused = false;
@@ -30,10 +32,10 @@ public class SinglePlayerGame extends Game {
     public void setUpGame() {
         String hiddenCardsData;
         List<String> hiddenCardsDataList;
-        String hiddenCards = "";
+        hiddenCards = "";
         String shownCardsData;
         List<String> shownCardsDataList;
-        String shownCards = "";
+        shownCards = "";
         String[] deckResponse;
         HashMap<String, String> deck = new HashMap<>();
         HttpRequest request = HttpRequest.newBuilder()
@@ -164,4 +166,6 @@ public class SinglePlayerGame extends Game {
     public String getDeckID() {
         return deckID;
     }
+    public String getShownCards() {return shownCards;}
+    public String getHiddenCards() {return hiddenCards;}
 }
