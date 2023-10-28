@@ -13,12 +13,13 @@ import java.util.List;
 public class SinglePlayerGame extends Game {
     private boolean legalPlacement;
     private boolean paused;
-
+    private GameState gameState;
     private String deckID;
     public SinglePlayerGame() {
-        legalPlacement = false;
-        paused = false;
+        this.legalPlacement = false;
+        this.paused = false;
         setUpGame();
+        this.gameState = new GameState();
     }
     @Override
     public void pauseGame() {
@@ -27,6 +28,12 @@ public class SinglePlayerGame extends Game {
 
     @Override
     public void setUpGame() {
+        String hiddenCardsData;
+        List<String> hiddenCardsDataList;
+        String hiddenCards = "";
+        String shownCardsData;
+        List<String> shownCardsDataList;
+        String shownCards = "";
         String[] deckResponse;
         HashMap<String, String> deck = new HashMap<>();
         HttpRequest request = HttpRequest.newBuilder()
@@ -50,10 +57,76 @@ public class SinglePlayerGame extends Game {
         deckID = deck.get("\"deck_id\"");
         deckID = deckID.substring(1, deckID.length() - 1);
 
+
         HttpRequest request1 = HttpRequest.newBuilder()
                 .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID +"/shuffle/?deck_count=1"))
                         .method("GET", HttpRequest.BodyPublishers.noBody())
                         .build();
+        HttpResponse<String> response1 = null;
+        try {
+            response1 = HttpClient.newHttpClient().send(request1, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        hiddenCardsData = drawCard(21);
+        hiddenCardsDataList = Arrays.stream(hiddenCardsData.split("\"code\": ")).toList();
+        List<String> hiddenCardsDataListCopy = new ArrayList<>(hiddenCardsDataList);
+        hiddenCardsDataListCopy.remove(0);
+        for (String dict : hiddenCardsDataListCopy) {
+            hiddenCards = hiddenCards.concat(dict.substring(1,3) + ",");
+        }
+        hiddenCards = hiddenCards.substring(0, hiddenCards.length() - 1);
+
+        HttpRequest request2 = HttpRequest.newBuilder()
+                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/hidden_pile/add/?cards="))
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpRequest request3 = HttpRequest.newBuilder()
+                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/hidden_pile/add/?cards=" + hiddenCards))
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response3 = null;
+        try {
+            response3 = HttpClient.newHttpClient().send(request3, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        shownCardsData = drawCard(7);
+        shownCardsDataList = Arrays.stream(shownCardsData.split("\"code\": ")).toList();
+        List<String> shownCardsDataListCopy = new ArrayList<>(shownCardsDataList);
+        shownCardsDataListCopy.remove(0);
+        for (String dict : shownCardsDataListCopy) {
+            shownCards = shownCards.concat(dict.substring(1,3) + ",");
+        }
+        shownCards = shownCards.substring(0, shownCards.length() - 1);
+        HttpRequest request4 = HttpRequest.newBuilder()
+                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards="))
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpRequest request5 = HttpRequest.newBuilder()
+                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards=" + shownCards))
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response5 = null;
+        try {
+            response5 = HttpClient.newHttpClient().send(request5, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+
+        System.out.println(hiddenCards);
+        System.out.println(shownCards);
+        System.out.println(response3.body());
+        System.out.println(response5.body());
+
 
     }
 

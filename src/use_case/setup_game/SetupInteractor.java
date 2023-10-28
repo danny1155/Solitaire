@@ -1,7 +1,10 @@
 package use_case.setup_game;
 
-//import entity.SinglePlayerGame;
+import entity.Game;
+import entity.SinglePlayerGame;
 
 public class SetupInteractor {
-    public SetupInteractor() {}
+    public SetupInteractor() {
+        Game game = new SinglePlayerGame();
+    }
 }
