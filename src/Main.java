@@ -1,10 +1,13 @@
 import entity.SinglePlayerGame;
 import entity.Game;
+import use_case.setup_game.SetupInteractor;
+
+import java.util.Set;
 
 public class Main {
 
     public static void main(String[] args) {
-        Game game = new SinglePlayerGame();
-        System.out.println(game.drawCard(1));
+        SetupInteractor setupInteractor = new SetupInteractor();
+        setupInteractor.execute();
     }
 }

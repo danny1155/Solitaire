@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -28,6 +29,24 @@ public class SinglePlayerGame extends Game {
 
     }
 
+    public HttpResponse<String> getHttpResponse(String url) {
+        HashMap<String, String> deck = new HashMap<>();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = null;
+        try {
+            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
     @Override
     public void setUpGame() {
         String hiddenCardsData;
@@ -38,20 +57,9 @@ public class SinglePlayerGame extends Game {
         shownCards = "";
         String[] deckResponse;
         HashMap<String, String> deck = new HashMap<>();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/new/"))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
 
-        HttpResponse<String> response = null;
-        try {
-            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        deckResponse = response.body().substring(1,response.body().length() - 1).split(", ");
+        HttpResponse<String> createDeckResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/new/");
+        deckResponse = createDeckResponse.body().substring(1,createDeckResponse.body().length() - 1).split(", ");
         for (String pair : deckResponse) {
             String[] parameter = pair.split(": ");
             deck.put(parameter[0], parameter[1]);
@@ -59,19 +67,8 @@ public class SinglePlayerGame extends Game {
         deckID = deck.get("\"deck_id\"");
         deckID = deckID.substring(1, deckID.length() - 1);
 
+        HttpResponse<String> shuffleResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID +"/shuffle/?deck_count=1");
 
-        HttpRequest request1 = HttpRequest.newBuilder()
-                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID +"/shuffle/?deck_count=1"))
-                        .method("GET", HttpRequest.BodyPublishers.noBody())
-                        .build();
-        HttpResponse<String> response1 = null;
-        try {
-            response1 = HttpClient.newHttpClient().send(request1, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         hiddenCardsData = drawCard(21);
         hiddenCardsDataList = Arrays.stream(hiddenCardsData.split("\"code\": ")).toList();
         List<String> hiddenCardsDataListCopy = new ArrayList<>(hiddenCardsDataList);
@@ -81,22 +78,9 @@ public class SinglePlayerGame extends Game {
         }
         hiddenCards = hiddenCards.substring(0, hiddenCards.length() - 1);
 
-        HttpRequest request2 = HttpRequest.newBuilder()
-                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/hidden_pile/add/?cards="))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
-        HttpRequest request3 = HttpRequest.newBuilder()
-                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/hidden_pile/add/?cards=" + hiddenCards))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
-        HttpResponse<String> response3 = null;
-        try {
-            response3 = HttpClient.newHttpClient().send(request3, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        HttpResponse<String> createHiddenPileResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/hidden_pile/add/?cards=");
+        HttpResponse<String> addToHiddenPileResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/hidden_pile/add/?cards=" + hiddenCards);
+
         shownCardsData = drawCard(7);
         shownCardsDataList = Arrays.stream(shownCardsData.split("\"code\": ")).toList();
         List<String> shownCardsDataListCopy = new ArrayList<>(shownCardsDataList);
@@ -105,29 +89,20 @@ public class SinglePlayerGame extends Game {
             shownCards = shownCards.concat(dict.substring(1,3) + ",");
         }
         shownCards = shownCards.substring(0, shownCards.length() - 1);
-        HttpRequest request4 = HttpRequest.newBuilder()
-                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards="))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
-        HttpRequest request5 = HttpRequest.newBuilder()
-                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards=" + shownCards))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
-        HttpResponse<String> response5 = null;
-        try {
-            response5 = HttpClient.newHttpClient().send(request5, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+        HttpResponse<String> createShownPileResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards=");
+        HttpResponse<String> addToShownPileResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards=" + shownCards);
+
 
 
 
         System.out.println(hiddenCards);
         System.out.println(shownCards);
-        System.out.println(response3.body());
-        System.out.println(response5.body());
+        System.out.println(addToHiddenPileResponse.body());
+        System.out.println(addToShownPileResponse.body());
+        for (String code : shownCards.split(",")) {
+            System.out.println(getCardImageLink(code));
+        }
 
 
     }
@@ -135,20 +110,10 @@ public class SinglePlayerGame extends Game {
     public String drawCard(int number) {
         List<String> drawCardResponse = new ArrayList<>();
         HashMap<String, String> drawCardResponseMap = new HashMap();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://www.deckofcardsapi.com/api/deck/" + deckID + "/draw/?count=" + number))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
 
-        HttpResponse<String> response = null;
-        try {
-            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        drawCardResponse = Arrays.stream(response.body().substring(1,response.body().length() - 1).split(", ", 2)).toList();
+        HttpResponse<String> drawCardResponse1 = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID + "/draw/?count=" + number);
+
+        drawCardResponse = Arrays.stream(drawCardResponse1.body().substring(1,drawCardResponse1.body().length() - 1).split(", ", 2)).toList();
         List<String> drawCardResponse2 = new ArrayList<>(drawCardResponse.subList(0, 1));
         drawCardResponse2.add(Arrays.stream(drawCardResponse.get(1).split(", ", 2)).toList().get(0));
         List<String> drawCardResponse3 = Arrays.stream(drawCardResponse.get(1).split(", ", 2)).toList();
@@ -168,4 +133,8 @@ public class SinglePlayerGame extends Game {
     }
     public String getShownCards() {return shownCards;}
     public String getHiddenCards() {return hiddenCards;}
+
+    public String getCardImageLink(String card) {
+        return "https://deckofcardsapi.com/static/img/" + card + ".png";
+    }
 }

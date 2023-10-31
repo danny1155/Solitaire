@@ -10,4 +10,5 @@ public abstract class Game {
     public abstract String drawCard(int number);
     public abstract String getShownCards();
     public abstract String getHiddenCards();
+    public abstract String getCardImageLink(String card);
 }
