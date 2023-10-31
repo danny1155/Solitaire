@@ -1,5 +1,7 @@
 package View;
 
+import interface_adapter.Setup.SetupController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,6 +11,9 @@ public class Homeview extends JFrame {
     private JButton playButton;
     private JButton setGameModeButton;
     private JButton scoreboardButton;
+    private JButton quitButton;
+
+    private SetupController setupController;
 
     public Homeview() {
         // Window title
@@ -21,6 +26,12 @@ public class Homeview extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Initializing the game");
+                //Hide Homeview
+                setVisible(false);
+
+                //Create and display the playsession's Gameview GUI
+                Gameview gameview = new Gameview();
+                gameview.setVisible(true);
             }
         });
 
@@ -41,13 +52,26 @@ public class Homeview extends JFrame {
                 JOptionPane.showMessageDialog(null, "Check the Scoreboard");
             }
         });
+        quitButton = new JButton("Quit");
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int result = JOptionPane.showConfirmDialog(Homeview.this,
+                        "Are you sure to quit the game?", "Confirm Quit", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    // Terminate the Homeview UI
+                    dispose();
+                }
+            }
+        });
 
         // Create panels to hold buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(3, 1));
+        buttonPanel.setLayout(new GridLayout(4, 1));
         buttonPanel.add(playButton);
         buttonPanel.add(setGameModeButton);
         buttonPanel.add(scoreboardButton);
+        buttonPanel.add(quitButton);
 
         // Add the button panel to the main content pane
         setContentPane(buttonPanel);
