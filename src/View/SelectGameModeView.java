@@ -15,9 +15,9 @@ public class SelectGameModeView extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(4, 1)); // Four components: three buttons and a "Back" button
 
-        JButton easyModeButton = new JButton("Easy Mode");
-        JButton mediumModeButton = new JButton("Medium Mode");
-        JButton hardModeButton = new JButton("Hard Mode");
+        JButton easyModeButton = new JButton("SinglePlayer Mode");
+        JButton mediumModeButton = new JButton("MultiPlayer Mode");
+        JButton hardModeButton = new JButton("Some Mode");
         JButton backButton = new JButton("Back");
 
         easyModeButton.addActionListener(new ButtonClickListener(1));
@@ -57,15 +57,15 @@ public class SelectGameModeView extends JFrame {
         public void actionPerformed(ActionEvent e) {
             switch (selectedMode) {
                 case 1:
-                    JOptionPane.showMessageDialog(null, "Starting Easy Mode...");
+                    JOptionPane.showMessageDialog(null, "Starting SinglePlayer Mode...");
                     // Add your logic for the easy mode here
                     break;
                 case 2:
-                    JOptionPane.showMessageDialog(null, "Starting Medium Mode...");
+                    JOptionPane.showMessageDialog(null, "Starting Multiplayer Mode...");
                     // Add your logic for the medium mode here
                     break;
                 case 3:
-                    JOptionPane.showMessageDialog(null, "Starting Hard Mode...");
+                    JOptionPane.showMessageDialog(null, "Starting Some Mode...");
                     // Add your logic for the hard mode here
                     break;
                 default:
@@ -81,9 +81,9 @@ public class SelectGameModeView extends JFrame {
         });
     }
 
-    public static void main(String[] args) {
-        displayGameModeSelector();
-    }
+    //public static void main(String[] args) {
+    //    displayGameModeSelector();
+    //}
 
 
 }
