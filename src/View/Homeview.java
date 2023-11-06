@@ -41,6 +41,12 @@ public class Homeview extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Select your Game Mode");
+                //Hide Homeview
+                setVisible(false);
+
+                //Create and display the Select Game Mode GUI
+                SelectGameModeView selectGameModeView = new SelectGameModeView();
+                selectGameModeView.setVisible(true);
             }
         });
 
@@ -83,14 +89,5 @@ public class Homeview extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                Homeview homeview = new Homeview();
-                homeview.setVisible(true);
-            }
-        });
-    }
 }
 
