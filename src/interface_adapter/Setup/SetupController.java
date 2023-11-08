@@ -4,14 +4,15 @@ import use_case.setup_game.SetupInputBoundary;
 import use_case.setup_game.SetupInputData;
 
 public class SetupController {
-    final SetupInputBoundary SetupUseCaseInteractor;
+    final SetupInputBoundary setupInteractor;
 
-    public SetupController(SetupInputBoundary setupUseCaseInteractor) {
-        this.SetupUseCaseInteractor = setupUseCaseInteractor;
+    public SetupController(SetupInputBoundary setupInteractor) {
+        this.setupInteractor = setupInteractor;
     }
 
-    public void execute(String gameMode){
+    public void execute(String gameMode) {
         SetupInputData setupInputData = new SetupInputData(gameMode);
-        SetupUseCaseInteractor.execute(setupInputData);
+        setupInteractor.execute(setupInputData);
+
     }
 }

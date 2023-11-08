@@ -1,13 +1,16 @@
 package use_case.setup_game;
 
-import entity.Game;
-
 public class SetupInputData {
-    final private String gameMode;
+    // Add fields as needed for setup data
+    private String gameMode;  // Example field for game mode selection
 
     public SetupInputData(String gameMode) {
         this.gameMode = gameMode;
     }
 
-    String getConfig(){return gameMode;}
+    public String getGameMode() {
+        return gameMode;
+    }
+
+    // Add other getters and setters for additional setup data
 }
