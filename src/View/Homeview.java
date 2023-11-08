@@ -1,23 +1,33 @@
 package View;
 
 import interface_adapter.Setup.SetupController;
+import interface_adapter.Setup.SetupPresenter;
+import interface_adapter.Setup.SetupState;
+
+import use_case.setup_game.SetupInputData;
+import use_case.setup_game.SetupInteractor;
+import use_case.setup_game.SetupOutputBoundary;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Homeview extends JFrame {
+public class Homeview extends JPanel {
+    public final String viewName = "Home";
     private JButton playButton;
     private JButton setGameModeButton;
     private JButton scoreboardButton;
     private JButton quitButton;
+    private final HomeViewModel homeViewModel;
+    private final SetupController setupController;
 
-    private SetupController setupController;
+    public Homeview(HomeViewModel homeViewModel, SetupController controller) {
+        this.setupController = controller;
+        this.homeViewModel = homeViewModel;
 
-    public Homeview() {
         // Window title
-        setTitle("Solitaire Organizer");
+//        setTitle("Solitaire Organizer");
 
         // Create buttons
         // Play button
@@ -28,10 +38,8 @@ public class Homeview extends JFrame {
                 JOptionPane.showMessageDialog(null, "Initializing the game");
                 //Hide Homeview
                 setVisible(false);
-
-                //Create and display the playsession's Gameview GUI
-                Gameview gameview = new Gameview();
-                gameview.setVisible(true);
+                // SetupState currentState = setupViewModel.getState();
+                setupController.execute("SinglePlayerGame");
             }
         });
 
@@ -41,6 +49,12 @@ public class Homeview extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Select your Game Mode");
+                //Hide Homeview
+                setVisible(false);
+
+                //Create and display the Select Game Mode GUI
+                SelectGameModeView selectGameModeView = new SelectGameModeView();
+                selectGameModeView.setVisible(true);
             }
         });
 
@@ -52,45 +66,43 @@ public class Homeview extends JFrame {
                 JOptionPane.showMessageDialog(null, "Check the Scoreboard");
             }
         });
-        quitButton = new JButton("Quit");
-        quitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int result = JOptionPane.showConfirmDialog(Homeview.this,
-                        "Are you sure to quit the game?", "Confirm Quit", JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.YES_OPTION) {
-                    // Terminate the Homeview UI
-                    dispose();
-                }
-            }
-        });
+//        quitButton = new JButton("Quit");
+//        quitButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                int result = JOptionPane.showConfirmDialog(Homeview.this,
+//                        "Are you sure to quit the game?", "Confirm Quit", JOptionPane.YES_NO_OPTION);
+//                if (result == JOptionPane.YES_OPTION) {
+//                    // Terminate the Homeview UI
+//                    dispose();
+//                }
+//            }
+//        });
 
         // Create panels to hold buttons
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(4, 1));
-        buttonPanel.add(playButton);
-        buttonPanel.add(setGameModeButton);
-        buttonPanel.add(scoreboardButton);
-        buttonPanel.add(quitButton);
+//        JPanel buttonPanel = new JPanel();
+//        buttonPanel.setLayout(new GridLayout(4, 1));
+//        buttonPanel.add(playButton);
+//        buttonPanel.add(setGameModeButton);
+//        buttonPanel.add(scoreboardButton);
+//        buttonPanel.add(quitButton);
+
+        //JPanel buttonPanel = new JPanel();
+        this.setLayout(new GridLayout(4, 1));
+        this.add(playButton);
+        this.add(setGameModeButton);
+        this.add(scoreboardButton);
+//        this.add(quitButton);
 
         // Add the button panel to the main content pane
-        setContentPane(buttonPanel);
+        //setContentPane(buttonPanel);
 
 
         // Set window size and behavior
         setSize(500, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLocationRelativeTo(null);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                Homeview homeview = new Homeview();
-                homeview.setVisible(true);
-            }
-        });
-    }
 }
 
