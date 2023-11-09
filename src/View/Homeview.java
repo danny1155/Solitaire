@@ -12,8 +12,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-public class Homeview extends JPanel {
+public class Homeview extends JPanel implements ActionListener, PropertyChangeListener {
     public final String viewName = "Home";
     private JButton playButton;
     private JButton setGameModeButton;
@@ -25,6 +27,7 @@ public class Homeview extends JPanel {
     public Homeview(HomeViewModel homeViewModel, SetupController controller) {
         this.setupController = controller;
         this.homeViewModel = homeViewModel;
+        this.homeViewModel.addPropertyChangeListener(this);
 
         // Window title
 //        setTitle("Solitaire Organizer");
@@ -39,6 +42,7 @@ public class Homeview extends JPanel {
                 //Hide Homeview
                 setVisible(false);
                 // SetupState currentState = setupViewModel.getState();
+                System.out.println("1");
                 setupController.execute("SinglePlayerGame");
             }
         });
@@ -104,5 +108,15 @@ public class Homeview extends JPanel {
 //        setLocationRelativeTo(null);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        System.out.println("Click " + evt.getActionCommand());
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        SetupState state = (SetupState) evt.getNewValue();
+        // setFields(state);
+    }
 }
 

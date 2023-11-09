@@ -17,11 +17,10 @@ public class SetupPresenter implements SetupOutputBoundary{
     @Override
     public void prepareSuccessView(SetupOutputData game) {
         SetupState setupState = setupViewModel.getState();
-        System.out.println(game.getCardsShown());
-        setupState.setCurrentlyShownCards(game.getCardsShown());
+        System.out.println(game.getListCardImage());
+        setupState.setCurrentlyShownCardsImage(game.getListCardImage());
         setupViewModel.setState(setupState);
         setupViewModel.firePropertyChanged();
-
         viewManagerModel.setActiveView(setupViewModel.getViewName());
         viewManagerModel.firePropertyChanged();
 

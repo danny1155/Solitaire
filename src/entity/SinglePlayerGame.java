@@ -12,17 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SinglePlayerGame extends Game {
-    private boolean legalPlacement;
     private boolean paused;
     private GameState gameState;
     private String deckID;
     private String shownCards;
     private String hiddenCards;
+    private String cardSelected;
     public SinglePlayerGame() {
-        this.legalPlacement = false;
         this.paused = false;
         setUpGame();
-        this.gameState = new GameState();
+        this.gameState = new GameState(shownCards);
     }
     @Override
     public void pauseGame() {
@@ -136,5 +135,18 @@ public class SinglePlayerGame extends Game {
 
     public String getCardImageLink(String card) {
         return "https://deckofcardsapi.com/static/img/" + card + ".png";
+    }
+
+    public boolean selectCard() {
+        cardSelected = null;
+        return true;
+    }
+    public boolean isLegal(String position, String cardSelected) {
+        //determine whether the cardSelected is heart/diamond or spade/club
+        //suppose the cardSelected is heart/diamond; if the card in the position is also heart/diamond, then it's illegal
+        //holds similarly for when it's spade/club
+        //if it's one of the required shapes, determine the value of the cardSelected
+        //if the card in the position has a value one less than the value of cardSelected, the drop is legal; otherwise, it's illegal
+        return false;
     }
 }

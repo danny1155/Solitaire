@@ -18,6 +18,9 @@ public class Main {
     public static void main(String[] args) {
         JFrame application = new JFrame("Solitaire");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        //application.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //application.setUndecorated(false);
+        application.setSize(1100,800);
 
         CardLayout cardLayout = new CardLayout();
 
@@ -41,7 +44,7 @@ public class Main {
         viewManagerModel.setActiveView(homeView.viewName);
         viewManagerModel.firePropertyChanged();
 
-        application.pack();
+        //application.pack();
         application.setVisible(true);
 
 //        SwingUtilities.invokeLater(new Runnable() {

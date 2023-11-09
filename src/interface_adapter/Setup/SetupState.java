@@ -7,25 +7,25 @@ public class SetupState {
     private int score;
     private List<Duration> time;
     private int numMoves;
-    private String currentlyShownCards;
+    private List<String> currentlyShownCardsImage;
     private String gameMode;
 
     public SetupState (SetupState copy) {
         score = copy.score;
         time = copy.time;
         numMoves = copy.numMoves;
-        currentlyShownCards = copy.currentlyShownCards;
+        currentlyShownCardsImage = copy.currentlyShownCardsImage;
         gameMode = copy.gameMode;
     }
 
     public SetupState() {}
 
-    public void setCurrentlyShownCards(String currentlyShownCards) {
-        this.currentlyShownCards = currentlyShownCards;
+    public void setCurrentlyShownCardsImage(List<String> currentlyShownCardsImage) {
+        this.currentlyShownCardsImage = currentlyShownCardsImage;
     }
 
-    public String getCurrentlyShownCards() {
-        return currentlyShownCards;
+    public List<String> getCurrentlyShownCardsImage() {
+        return currentlyShownCardsImage;
     }
 
     public void setGameMode(String gameMode) {
