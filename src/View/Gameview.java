@@ -20,12 +20,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class Gameview extends JPanel implements ActionListener, PropertyChangeListener{
-    public final String viewName = "Set up game";
-    private JPanel cardsPanel;
+    public final String viewName = "setup";
+    private JLayeredPane cardsPanel;
     private JLabel timerLabel;
     private long startTime;
     private JPanel deckPanel;
     private JPanel foundationPanel;
+    private java.util.List<String> shownCardsImage;
     private final SetupViewModel setupViewModel;
     private final SetupController setupController;
 
@@ -33,7 +34,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         this.setupViewModel = setupViewModel;
         this.setupController = setupController;
         this.setupViewModel.addPropertyChangeListener(this);
-        String pokerCards;
+
         // Set the frame to full-screen mode
 //        setExtendedState(JFrame.MAXIMIZED_BOTH);
 //        setUndecorated(false);
@@ -47,46 +48,57 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         timerLabel.setHorizontalAlignment(JLabel.CENTER);
 
         // Create a panel to hold the cards
-        cardsPanel = new JPanel();
-        cardsPanel.setLayout(new OverlayLayout(cardsPanel));
+        cardsPanel = new JLayeredPane();
+        cardsPanel.setBounds(0,0, 800, 500);
+        //cardsPanel.setLayout(new GridBagLayout());
+        //cardsPanel.setLayout(new GridLayout(1, 7));
 
+
+
+        cardsPanel.addPropertyChangeListener(String.valueOf(shownCardsImage), this);
 
         // Parse the poker card string into an array
-        SetupState currentState = setupViewModel.getState();
-        String[] cardCodes = currentState.getCurrentlyShownCards().split(",");
+//        SetupState currentState = setupViewModel.getState();
+        System.out.println(shownCardsImage);
+//        if (shownCards != null) {
+//            String[] cardCodes = shownCards.split(",");
+//
+//            // Create and configure JLabels for each card and card backs
+//            for (int i = 0; i < 7; i++) {
+//                if (i > 0) {
+//                    // Add card backs starting from the second pile
+//                    int numCardBacks = i - 1;
+//                    for (int j = 0; j < numCardBacks; j++) {
+//                        addCardBack(cardsPanel);
+//                    }
+//                }
+//
+//                // Get the card image URL based on the card code
+//                String cardCode = cardCodes[i].trim();
+//                addCard(cardsPanel, cardCode);
+//            }
+//        }
 
-        // Create and configure JLabels for each card and card backs
-        for (int i = 0; i < 7; i++) {
-            if (i > 0) {
-                // Add card backs starting from the second pile
-                int numCardBacks = i - 1;
-                for (int j = 0; j < numCardBacks; j++) {
-                    addCardBack(cardsPanel);
-                }
-            }
-
-            // Get the card image URL based on the card code
-            String cardCode = cardCodes[i].trim();
-            addCard(cardsPanel, cardCode);
-        }
 
         // Create a panel for the deck
         deckPanel = new JPanel();
-        deckPanel.setLayout(new BoxLayout(deckPanel, BoxLayout.Y_AXIS));
+        deckPanel.setLayout(new OverlayLayout(deckPanel));
+
 
         // Add 24 closely stacked card back images to the deck panel
         for (int i = 0; i < 24; i++) {
-            addCardBack(deckPanel);
+            addDeck(deckPanel, i);
         }
+
         // Create a panel for the foundation
         foundationPanel = new JPanel();
         foundationPanel.setLayout(new BoxLayout(foundationPanel, BoxLayout.Y_AXIS));
 
         // Add 4 vertically separated cards to the foundation panel with grey filter
-        addFilteredCard(foundationPanel, "https://www.deckofcardsapi.com/static/img/AS.png");
-        addFilteredCard(foundationPanel, "https://www.deckofcardsapi.com/static/img/AC.png");
-        addFilteredCard(foundationPanel, "https://www.deckofcardsapi.com/static/img/AH.png");
-        addFilteredCard(foundationPanel, "https://www.deckofcardsapi.com/static/img/AD.png");
+        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AS.png");
+        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AC.png");
+        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AH.png");
+        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AD.png");
 
         // Create a Timer to update the timer label in real-time
         Timer gameTimer = new Timer(1000, new ActionListener() {
@@ -163,8 +175,9 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 //        miniMenuPanel.setVisible(false);
         this.setLayout(new BorderLayout());
         this.add(timerLabel, BorderLayout.NORTH);
-        this.add(cardsPanel, BorderLayout.CENTER);
         this.add(deckPanel, BorderLayout.WEST);
+        this.add(cardsPanel, BorderLayout.CENTER);
+
 //        getContentPane().add(miniMenuPanel, BorderLayout.SOUTH);
         this.add(foundationPanel, BorderLayout.EAST);
 
@@ -187,13 +200,44 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     }
 
     // Helper method to add a card back image to the panel
-    private void addCardBack(Container panel) {
+    private void addCardBack(Container panel, int i, int j) {
+
+
         URL cardBackImageUrl = getCardBackImageURL();
         if (cardBackImageUrl != null) {
             try {
-                Image cardBackImage = ImageIO.read(cardBackImageUrl);
-                Icon icon = new ImageIcon(cardBackImage);
+                BufferedImage cardBackImage = ImageIO.read(cardBackImageUrl);
+                Image image = cardBackImage.getScaledInstance(100, 140, Image.SCALE_DEFAULT);
+                Icon icon = new ImageIcon(image);
+
                 JLabel cardBackLabel = new JLabel(icon);
+                cardBackLabel.setOpaque(true);
+                //cardBackLabel.setLocation(0,5 * j);
+                //cardBackLabel.setAlignmentY(0.05f * (j + 1));
+                cardBackLabel.setBounds(0, 20 * (i - j - 1), 100, 140);
+                //cardBackLabel.setBackground(Color.red);
+
+                panel.add(cardBackLabel);
+
+
+                // panel.add(cardBackLabel, new BoxLayout(panel, BoxLayout.Y_AXIS));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private void addDeck(Container panel, int i) {
+        URL cardBackImageUrl = getCardBackImageURL();
+        if (cardBackImageUrl != null) {
+            try {
+                BufferedImage cardBackImage = ImageIO.read(cardBackImageUrl);
+                Image image = cardBackImage.getScaledInstance(100, 140, Image.SCALE_DEFAULT);
+                Icon icon = new ImageIcon(image);
+                JLabel cardBackLabel = new JLabel(icon);
+                cardBackLabel.setOpaque(true);
+                cardBackLabel.setAlignmentY(0.0f);
                 panel.add(cardBackLabel);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -202,13 +246,19 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     }
 
     // Helper method to add a card image to the panel
-    private void addCard(Container panel, String cardCode) {
+    private void addCard(Container panel, String cardCode, int i) {
         URL imageUrl = getCardImageURL(cardCode);
         if (imageUrl != null) {
             try {
-                Image cardImage = ImageIO.read(imageUrl);
-                Icon icon = new ImageIcon(cardImage);
+                BufferedImage cardImage = ImageIO.read(imageUrl);
+                Image image = cardImage.getScaledInstance(100, 140, Image.SCALE_DEFAULT);
+                Icon icon = new ImageIcon(image);
                 JLabel cardLabel = new JLabel(icon);
+                cardLabel.setOpaque(true);
+
+                cardLabel.setBounds(0, 20 * i, 100, 140);
+
+
                 panel.add(cardLabel);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -229,7 +279,8 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     // Helper method to get the URL of the card image based on its code
     private URL getCardImageURL(String cardCode) {
         try {
-            return new URL("https://www.deckofcardsapi.com/static/img/" + cardCode + ".png");
+
+            return new URL(cardCode);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -241,8 +292,9 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         URL imageUrl = getCardImageURL(cardImageUrl);
         if (imageUrl != null) {
             try {
-                Image cardImage = ImageIO.read(imageUrl);
+                BufferedImage cardImage = ImageIO.read(imageUrl);
                 Image filteredImage = applyGreyFilter(cardImage);
+
                 Icon icon = new ImageIcon(filteredImage);
                 JLabel cardLabel = new JLabel(icon);
                 panel.add(cardLabel);
@@ -262,7 +314,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
         colorConvert.filter(bufferedImage, bufferedImage);
 
-        return bufferedImage;
+        return bufferedImage.getScaledInstance(100, 140, Image.SCALE_DEFAULT);
     }
 
     public void actionPerformed(ActionEvent evt) {
@@ -271,7 +323,43 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        SetupState state = (SetupState) evt.getNewValue();
-        // setFields(state);
+        if (evt.getNewValue() instanceof SetupState state) {
+            setCards(state);
+        }
+
     }
+
+    private void setCards(SetupState state) {
+        shownCardsImage = state.getCurrentlyShownCardsImage();
+
+
+        // Create and configure JLabels for each card and card backs
+        for (int i = 0; i < 7; i++) {
+            JLayeredPane columnPanel = new JLayeredPane();
+            columnPanel.setBounds(110 * i + 70,0, 200, 400);
+
+            addCard(columnPanel, shownCardsImage.get(i), i);
+
+            if (i > 0) {
+                // Add card backs starting from the second pile
+                for (int j = 0; j < i; j++) {
+                    addCardBack(columnPanel, i,  j);
+
+//                    JPanel filler = new JPanel();
+//                    columnPanel.add(filler);
+                }
+            }
+
+
+
+                cardsPanel.add(columnPanel);
+                //cardsPanel.repaint();
+
+
+
+        }
+
+    }
+
+
 }
