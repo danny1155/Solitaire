@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.ArrayList;
+
 public abstract class Game {
     private boolean legalPlacement;
     private boolean paused;
@@ -11,4 +13,5 @@ public abstract class Game {
     public abstract String getShownCards();
     public abstract String getHiddenCards();
     public abstract String getCardImageLink(String card);
+    private ArrayList<Card> cardsInplay;
 }
