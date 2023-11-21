@@ -1,15 +1,11 @@
 package entity;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class SinglePlayerGame extends Game {
     private boolean paused;
@@ -18,6 +14,8 @@ public class SinglePlayerGame extends Game {
     private String shownCards;
     private String hiddenCards;
     private String cardSelected;
+    private ArrayList<Card> cardsInplay;
+    private Map<Integer, ArrayList<Card>> columns;
     public SinglePlayerGame() {
         this.paused = false;
         setUpGame();
@@ -92,11 +90,30 @@ public class SinglePlayerGame extends Game {
         HttpResponse<String> createShownPileResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards=");
         HttpResponse<String> addToShownPileResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards=" + shownCards);
 
+        columns = new HashMap<>();
+        for (int i = 0; i < 12; i++){
+            columns.put(i, new ArrayList<>());
+        }
+        cardsInplay = new ArrayList<>();
+        initializeDeck();
+        alocateHiddenCards(hiddenCards);
+        alocateShownCards(shownCards);
 
 
 
         System.out.println(hiddenCards);
         System.out.println(shownCards);
+        int i = 0;
+        for (Card card : cardsInplay){
+            if (card.getIndex() != 0){
+                i += 1;
+            }
+        }
+        System.out.println(i);
+        for (Card card : cardsInplay){
+            if (card.getColumn() != 0){
+        System.out.println("Card: " + card.getName() + ", isShown: " + card.checkIsShown() + ", column: "
+                + card.getColumn() + ", index: " + card.getIndex() + ", isTop: " + card.isTopCard(columns.get(card.getColumn())));}}
         System.out.println(addToHiddenPileResponse.body());
         System.out.println(addToShownPileResponse.body());
         for (String code : shownCards.split(",")) {
@@ -148,5 +165,55 @@ public class SinglePlayerGame extends Game {
         //if it's one of the required shapes, determine the value of the cardSelected
         //if the card in the position has a value one less than the value of cardSelected, the drop is legal; otherwise, it's illegal
         return false;
+    }
+
+    private void initializeDeck() {
+        String[] colors = {"H", "D", "S", "C"};
+        String[] values = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "0", "J", "Q", "K"};
+        for (String color : colors){
+            for (String value : values){
+                String cardName = value + color;
+                Card card = new Card(cardName);
+                cardsInplay.add(card);
+                columns.get(0).add(card);
+            }
+        }
+    }
+
+    private void alocateShownCards(String cardsToShow){
+        List<String> cardNames = Arrays.asList(cardsToShow.split(","));
+        for (int i = 0; i < cardNames.size(); i++){
+            for (Card card: cardsInplay){
+                if (cardNames.get(i).equals(card.getName())) {
+                    card.showCard();
+                    card.moveCard(i + 1);
+                    columns.get(0).remove(card);
+                    columns.get(i + 1).add(card);
+                    card.setIndex(columns.get(i + 1));
+                }
+            }
+        }
+    }
+
+    private void alocateHiddenCards(String cardsToHide) {
+        List<String> cardNames = Arrays.asList(cardsToHide.split(","));
+        int columnInt = 2;
+        int columnIndex = 0;
+        int numPerStack = 1;
+        while (numPerStack <= 6) {
+            for (int i = columnIndex; i < columnIndex + numPerStack; i++) {
+                for (Card card : cardsInplay) {
+                    if (cardNames.get(i).equals(card.getName())) {
+                        columns.get(0).remove(card);
+                        columns.get(columnInt).add(card);
+                        card.moveCard(columnInt);
+                        card.setIndex(columns.get(columnInt));
+                    }
+                }
+            }
+            columnIndex += numPerStack;
+            columnInt += 1;
+            numPerStack += 1;
+        }
     }
 }
