@@ -40,6 +40,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     private Map<Integer, ArrayList<Card>> columns;
     private HashMap<Integer, JLabel> moveableCards;
     private JLabel selectedCard;
+    private int i = 0;
 
     public Gameview(SetupViewModel setupViewModel, HomeViewModel homeViewModel, ViewManagerModel viewManagerModel, SetupController setupController) {
         this.setupViewModel = setupViewModel;
@@ -424,7 +425,8 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                 );
                 cardsPanel.remove(selectedCard);
                 selectedCard.setBounds((int) image_corner.getX(), (int) image_corner.getY(), 100, 140);
-                cardsPanel.add(selectedCard, 1);
+                i++;
+                cardsPanel.add(selectedCard, 0);
                 previousPoint = currentPoint;
 
                 //validate();
