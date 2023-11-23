@@ -21,6 +21,7 @@ public class Card {
     private boolean isSelected;
     private boolean isShown;
     private int index;
+    private Point image_corner;
 
     public Card (String cardName){
         this.name = cardName;
@@ -52,6 +53,7 @@ public class Card {
     public int getColumn(){return column;}
     public boolean checkInDeck(){return inDeck;}
     public String getImageLink() {return imageLink;}
+    public Point getImage_corner() {return image_corner;}
     public boolean checkIsSelected() {return isSelected;}
     public boolean checkIsShown() {return isShown;}
     public void showCard(){
@@ -68,6 +70,7 @@ public class Card {
     public void setIndex(ArrayList<Card> column){
         this.index = column.indexOf(this);
     }
+    public void setImage_corner(int x, int y) {this.image_corner = new Point(x, y);}
 
     public boolean isTopCard(ArrayList<Card> column){
         return column.size() - 1 - column.indexOf(this) == 0;

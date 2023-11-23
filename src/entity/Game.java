@@ -1,6 +1,7 @@
 package entity;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public abstract class Game {
     private boolean legalPlacement;
@@ -13,5 +14,6 @@ public abstract class Game {
     public abstract String getShownCards();
     public abstract String getHiddenCards();
     public abstract String getCardImageLink(String card);
+    public abstract Map<Integer, ArrayList<Card>> getColumns();
     private ArrayList<Card> cardsInplay;
 }

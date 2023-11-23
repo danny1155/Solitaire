@@ -2,6 +2,7 @@ package use_case.setup_game;
 
 import entity.Game;
 import entity.SinglePlayerGame;
+import entity.Card;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class SetupInteractor implements SetupInputBoundary{
         for (String code : game.getShownCards().split(",")) {
             listShownCardImage.add( game.getCardImageLink(code));
         }
-        SetupOutputData setupOutputData = new SetupOutputData(listShownCardImage);
+        SetupOutputData setupOutputData = new SetupOutputData(listShownCardImage, game.getColumns());
         setupPresenter.prepareSuccessView(setupOutputData);
     }
 

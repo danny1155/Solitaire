@@ -1,4 +1,5 @@
 import View.Gameview;
+import View.HomeViewModel;
 import interface_adapter.Setup.SetupController;
 import interface_adapter.Setup.SetupPresenter;
 import interface_adapter.Setup.SetupViewModel;
@@ -11,9 +12,9 @@ public class SetupGameUseCaseFactory {
     private SetupGameUseCaseFactory() {}
 
     public static Gameview create(
-            ViewManagerModel viewManagerModel, SetupViewModel setupViewModel) {
+            ViewManagerModel viewManagerModel, HomeViewModel homeViewModel, SetupViewModel setupViewModel) {
         SetupController setupController = createSetupUseCase(viewManagerModel, setupViewModel);
-        return new Gameview(setupViewModel, setupController);
+        return new Gameview(setupViewModel, homeViewModel, viewManagerModel, setupController);
     }
 
     private static SetupController createSetupUseCase(ViewManagerModel viewManagerModel, SetupViewModel setupViewModel) {

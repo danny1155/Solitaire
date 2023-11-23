@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.util.Set;
 import java.awt.*;
 
+
 public class Main {
 
     public static void main(String[] args) {
@@ -38,7 +39,7 @@ public class Main {
         Homeview homeView = SetupUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel);
         views.add(homeView, homeView.viewName);
 
-        Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, setupViewModel);
+        Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel);
         views.add(gameView, gameView.viewName);
 
         viewManagerModel.setActiveView(homeView.viewName);
@@ -51,6 +52,7 @@ public class Main {
 //            public void run() {
 //                Homeview homeview = new Homeview();
 //                homeview.setVisible(true);
+//
 //            }
 //        });
     }

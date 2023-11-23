@@ -1,16 +1,15 @@
 package View;
 
+import entity.Card;
 import interface_adapter.Setup.SetupController;
 import interface_adapter.Setup.SetupViewModel;
 import interface_adapter.Setup.SetupState;
+import interface_adapter.ViewManagerModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.color.ColorSpace;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
+import java.awt.event.*;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.net.URL;
@@ -18,6 +17,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class Gameview extends JPanel implements ActionListener, PropertyChangeListener{
     public final String viewName = "setup";
@@ -29,11 +32,30 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     private java.util.List<String> shownCardsImage;
     private final SetupViewModel setupViewModel;
     private final SetupController setupController;
+    private final HomeViewModel homeViewModel;
+    private Timer gameTimer;
 
-    public Gameview(SetupViewModel setupViewModel, SetupController setupController) {
+    private Point previousPoint;
+    private Point image_corner;
+    private Map<Integer, ArrayList<Card>> columns;
+    private HashMap<Integer, JLabel> moveableCards;
+    private JLabel selectedCard;
+
+    public Gameview(SetupViewModel setupViewModel, HomeViewModel homeViewModel, ViewManagerModel viewManagerModel, SetupController setupController) {
         this.setupViewModel = setupViewModel;
         this.setupController = setupController;
+        this.homeViewModel = homeViewModel;
         this.setupViewModel.addPropertyChangeListener(this);
+        this.shownCardsImage = new ArrayList<>();
+        this.columns = new HashMap<Integer, ArrayList<Card>>();
+        this.moveableCards = new HashMap<>();
+
+
+        ClickListener clickListener = new ClickListener();
+        this.addMouseListener(clickListener);
+
+        DragListener dragListener = new DragListener();
+        this.addMouseMotionListener(dragListener);
 
         // Set the frame to full-screen mode
 //        setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -101,7 +123,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AD.png");
 
         // Create a Timer to update the timer label in real-time
-        Timer gameTimer = new Timer(1000, new ActionListener() {
+        gameTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 startTime += 1000;
@@ -112,13 +134,13 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                 timerLabel.setText(timeString);
             }
         });
-        gameTimer.start();
+
 
         // Set the default close operation to exit on close
         // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Create a mini-menu panel
-//        JPanel miniMenuPanel = new JPanel(new FlowLayout());
+         //Create a mini-menu panel
+        JPanel miniMenuPanel = new JPanel(new FlowLayout());
 
         // Add the quit button
 //        JButton quitButton = new JButton("Exit to Desktop");
@@ -128,41 +150,46 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 //                int result = JOptionPane.showConfirmDialog(Gameview.this,
 //                        "Are you certain to leave the game?", "Confirm Exit", JOptionPane.YES_NO_OPTION);
 //                if (result == JOptionPane.YES_OPTION) {
-                    // Close the Gameview
+//                     Close the Gameview
 //                    dispose();
-                    // You can also perform any additional cleanup or actions here
-                    // For example, returning to the Homeview, etc.
+//                     You can also perform any additional cleanup or actions here
+//                     For example, returning to the Homeview, etc.
 //                }
 //            }
 //        });
 //        miniMenuPanel.add(quitButton);
 
         // Add a "Close" button to the mini-menu
-//        JButton closeButton = new JButton("Close");
-//        closeButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                miniMenuPanel.setVisible(false); // Hide the mini-menu
-//            }
-//        });
-//        miniMenuPanel.add(closeButton);
-//
-//        // Add a "Return to Home Menu" button to the mini-menu
-//        JButton returnButton = new JButton("Return to Home Menu");
-//        returnButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                int result = JOptionPane.showConfirmDialog(Gameview.this,
-//                        "Are you sure to return to Home Menu?", "Confirm Return", JOptionPane.YES_NO_OPTION);
-//                if (result == JOptionPane.YES_OPTION) {
-//                    // Terminate Gameview and return to Homeview
-//                    dispose(); // Close Gameview
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                miniMenuPanel.setVisible(false); // Hide the mini-menu
+
+            }
+        });
+        miniMenuPanel.add(closeButton);
+
+        // Add a "Return to Home Menu" button to the mini-menu
+        JButton returnButton = new JButton("Return to Home Menu");
+        returnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int result = JOptionPane.showConfirmDialog(Gameview.this,
+                        "Are you sure to return to Home Menu?", "Confirm Return", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    // Terminate Gameview and return to Homeview
+                     // Close Gameview
+
+                    viewManagerModel.setActiveView(homeViewModel.getViewName());
+                    viewManagerModel.firePropertyChanged();
 //                    Homeview homeview = new Homeview();
 //                    homeview.setVisible(true); // Show Homeview
-//                }
-//            }
-//        });
-//        miniMenuPanel.add(returnButton);
+                }
+            }
+        });
+        miniMenuPanel.add(returnButton);
+
 
 
         // Add components to the content pane
@@ -172,35 +199,35 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 //        getContentPane().add(deckPanel, BorderLayout.WEST);
 ////        getContentPane().add(miniMenuPanel, BorderLayout.SOUTH);
 //        getContentPane().add(foundationPanel, BorderLayout.EAST);
-//        miniMenuPanel.setVisible(false);
+        miniMenuPanel.setVisible(true);
         this.setLayout(new BorderLayout());
         this.add(timerLabel, BorderLayout.NORTH);
         this.add(deckPanel, BorderLayout.WEST);
         this.add(cardsPanel, BorderLayout.CENTER);
 
-//        getContentPane().add(miniMenuPanel, BorderLayout.SOUTH);
+        this.add(miniMenuPanel, BorderLayout.SOUTH);
         this.add(foundationPanel, BorderLayout.EAST);
 
         // Register a KeyAdapter to listen for the Escape key
-//        addKeyListener(new KeyAdapter() {
-//            @Override
-//            public void keyPressed(KeyEvent e) {
-//                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-//                    miniMenuPanel.setVisible(true); // Show the mini-menu
-//                }
-//            }
-//        });
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    miniMenuPanel.setVisible(true); // Show the mini-menu
+                }
+            }
+        });
 //
-//        // Enable focus on the frame for key events
-//        setFocusable(true);
-//        requestFocus();
+////         Enable focus on the frame for key events
+        setFocusable(true);
+        requestFocus();
 //
 //        // Make the frame visible
 //        setVisible(true);
     }
 
     // Helper method to add a card back image to the panel
-    private void addCardBack(Container panel, int i, int j) {
+    private void addCardBack(Container panel, int x, int y) {
 
 
         URL cardBackImageUrl = getCardBackImageURL();
@@ -214,7 +241,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                 cardBackLabel.setOpaque(true);
                 //cardBackLabel.setLocation(0,5 * j);
                 //cardBackLabel.setAlignmentY(0.05f * (j + 1));
-                cardBackLabel.setBounds(0, 20 * (i - j - 1), 100, 140);
+                cardBackLabel.setBounds(x, y, 100, 140);
                 //cardBackLabel.setBackground(Color.red);
 
                 panel.add(cardBackLabel);
@@ -246,7 +273,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     }
 
     // Helper method to add a card image to the panel
-    private void addCard(Container panel, String cardCode, int i) {
+    private void addCard(Container panel, String cardCode, int i, int x, int y) {
         URL imageUrl = getCardImageURL(cardCode);
         if (imageUrl != null) {
             try {
@@ -256,10 +283,12 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                 JLabel cardLabel = new JLabel(icon);
                 cardLabel.setOpaque(true);
 
-                cardLabel.setBounds(0, 20 * i, 100, 140);
+                cardLabel.setBounds(x, y, 100, 140);
 
 
                 panel.add(cardLabel);
+                moveableCards.put(i, cardLabel);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -325,25 +354,30 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getNewValue() instanceof SetupState state) {
             setCards(state);
+            gameTimer.start();
         }
 
     }
 
     private void setCards(SetupState state) {
         shownCardsImage = state.getCurrentlyShownCardsImage();
+        columns = state.getColumns();
 
-
-        // Create and configure JLabels for each card and card backs
+         //Create and configure JLabels for each card and card backs
         for (int i = 0; i < 7; i++) {
-            JLayeredPane columnPanel = new JLayeredPane();
-            columnPanel.setBounds(110 * i + 70,0, 200, 400);
+            //JLayeredPane columnPanel = new JLayeredPane();
+            //columnPanel.setBounds(110 * i + 70,0, 200, 400);
+            state.getColumns().get(i + 1).get(i).setImage_corner(110 * i + 70, i * 20);
+            Point cardPoint = new Point(110 * i + 70, i * 20);
 
-            addCard(columnPanel, shownCardsImage.get(i), i);
+            // addCard(cardsPanel, shownCardsImage.get(i), 110 * i + 70, i * 20);
+            addCard(cardsPanel, state.getColumns().get(i + 1).get(i).getImageLink(), i + 1,  110 * i + 70, i * 20);
+
 
             if (i > 0) {
                 // Add card backs starting from the second pile
                 for (int j = 0; j < i; j++) {
-                    addCardBack(columnPanel, i,  j);
+                    addCardBack(cardsPanel, 110 * i + 70, 20 * (i - j - 1));
 
 //                    JPanel filler = new JPanel();
 //                    columnPanel.add(filler);
@@ -352,13 +386,55 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
 
 
-                cardsPanel.add(columnPanel);
-                //cardsPanel.repaint();
+
 
 
 
         }
 
+    }
+
+    private class ClickListener extends MouseAdapter {
+        public void mousePressed(MouseEvent evt) {
+            previousPoint = evt.getPoint();
+            for (int i = 1; i < 8; i++) {
+                if (moveableCards.get(i).getX() + 100.0 <= previousPoint.getX() && previousPoint.getX() <= moveableCards.get(i).getX() + 200.0
+                        && moveableCards.get(i).getY() <= previousPoint.getY() && previousPoint.getY() <= moveableCards.get(i).getY() + 140.0) {
+                    image_corner = columns.get(i).get(i - 1).getImage_corner();
+                    selectedCard = moveableCards.get(i);
+                    break;
+
+                }
+            }
+
+
+
+        }
+    }
+
+    private class DragListener extends MouseMotionAdapter {
+        public void mouseDragged(MouseEvent evt) {
+            Point currentPoint = evt.getPoint();
+
+            //image_corner = columns.get(7).get(6).getImage_corner();
+            if (image_corner != null) {
+                image_corner.translate(
+                        (int) (currentPoint.getX() - previousPoint.getX()),
+                        (int) (currentPoint.getY() - previousPoint.getY())
+                );
+                cardsPanel.remove(selectedCard);
+                selectedCard.setBounds((int) image_corner.getX(), (int) image_corner.getY(), 100, 140);
+                cardsPanel.add(selectedCard, 1);
+                previousPoint = currentPoint;
+
+                //validate();
+                //invalidate();
+                repaint();
+                System.out.println(image_corner);
+                //System.out.println(moveableCardPoints.get(7));
+            }
+
+        }
     }
 
 
