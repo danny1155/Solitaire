@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Card {
     private String name;
-    private String color;
+    private int color;
     private int value;
     private boolean inDeck;
     private int column;
@@ -21,10 +21,16 @@ public class Card {
     private boolean isSelected;
     private boolean isShown;
     private int index;
+    private Point image_corner;
 
     public Card (String cardName){
         this.name = cardName;
-        this.color = cardName.substring(1);
+        if (cardName.substring(1).equals("H") || cardName.substring(1).equals("D")) {
+            this.color = 1;
+        } else {
+            this.color = 0;
+        }
+        //this.color = cardName.substring(1);
         if (cardName.charAt(0) == '0'){
             this.value = 10;
         } else if (cardName.charAt(0) == 'J') {
@@ -47,11 +53,12 @@ public class Card {
     }
 
     public String getName(){return name;}
-    public String getColor(){return color;}
+    public int getColor(){return color;}
     public int getValue(){return value;}
     public int getColumn(){return column;}
     public boolean checkInDeck(){return inDeck;}
     public String getImageLink() {return imageLink;}
+    public Point getImage_corner() {return image_corner;}
     public boolean checkIsSelected() {return isSelected;}
     public boolean checkIsShown() {return isShown;}
     public void showCard(){
@@ -68,6 +75,7 @@ public class Card {
     public void setIndex(ArrayList<Card> column){
         this.index = column.indexOf(this);
     }
+    public void setImage_corner(int x, int y) {this.image_corner = new Point(x, y);}
 
     public boolean isTopCard(ArrayList<Card> column){
         return column.size() - 1 - column.indexOf(this) == 0;

@@ -16,6 +16,7 @@ public class SinglePlayerGame extends Game {
     private String cardSelected;
     private ArrayList<Card> cardsInplay;
     private Map<Integer, ArrayList<Card>> columns;
+    //ArrayList<Card> columns;
     public SinglePlayerGame() {
         this.paused = false;
         setUpGame();
@@ -149,6 +150,7 @@ public class SinglePlayerGame extends Game {
     }
     public String getShownCards() {return shownCards;}
     public String getHiddenCards() {return hiddenCards;}
+    public Map<Integer, ArrayList<Card>> getColumns() {return columns;}
 
     public String getCardImageLink(String card) {
         return "https://deckofcardsapi.com/static/img/" + card + ".png";

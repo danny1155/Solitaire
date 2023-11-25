@@ -92,11 +92,11 @@ public class Homeview extends JPanel implements ActionListener, PropertyChangeLi
 //        buttonPanel.add(quitButton);
 
         //JPanel buttonPanel = new JPanel();
-        this.setLayout(new GridLayout(4, 1));
+        this.setLayout(new GridLayout(3, 1));
         this.add(playButton);
         this.add(setGameModeButton);
         this.add(scoreboardButton);
-//        this.add(quitButton);
+        //this.add(quitButton);
 
         // Add the button panel to the main content pane
         //setContentPane(buttonPanel);

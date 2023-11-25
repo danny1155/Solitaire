@@ -1,5 +1,7 @@
+import View.Gameview;
 import View.HomeViewModel;
 import View.Homeview;
+import data_access.GameDataAccessObject;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.Setup.SetupViewModel;
 import interface_adapter.Setup.SetupController;
@@ -14,17 +16,17 @@ public class SetupUseCaseFactory {
     private SetupUseCaseFactory() {}
 
     public static Homeview create(
-            ViewManagerModel viewManagerModel, HomeViewModel homeViewModel, SetupViewModel setupViewModel) {
-            SetupController setupController = createSetupUseCase(viewManagerModel, setupViewModel);
+            ViewManagerModel viewManagerModel, HomeViewModel homeViewModel, SetupViewModel setupViewModel, GameDataAccessObject gameDataAccessObject) {
+            SetupController setupController = createSetupUseCase(viewManagerModel, setupViewModel, gameDataAccessObject);
             return new Homeview(homeViewModel, setupController);
     }
 
-    private static SetupController createSetupUseCase(ViewManagerModel viewManagerModel, SetupViewModel setupViewModel) {
+    private static SetupController createSetupUseCase(ViewManagerModel viewManagerModel, SetupViewModel setupViewModel, GameDataAccessObject gameDataAccessObject) {
 
         // Notice how we pass this method's parameters to the Presenter.
         SetupOutputBoundary setupOutputBoundary = new SetupPresenter(viewManagerModel, setupViewModel);
 
-        SetupInputBoundary setupInteractor = new SetupInteractor(setupOutputBoundary);
+        SetupInputBoundary setupInteractor = new SetupInteractor(setupOutputBoundary, gameDataAccessObject);
 
         return new SetupController(setupInteractor);
     }
