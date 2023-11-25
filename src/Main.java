@@ -1,16 +1,11 @@
-import View.HomeViewModel;
-import entity.SinglePlayerGame;
-import entity.Game;
-import interface_adapter.Setup.SetupViewModel;
-import use_case.setup_game.SetupInputData;
-import use_case.setup_game.SetupInteractor;
 import View.Gameview;
+import View.HomeViewModel;
 import View.Homeview;
-import interface_adapter.ViewManagerModel;
 import View.ViewManager;
+import interface_adapter.Setup.SetupViewModel;
+import interface_adapter.ViewManagerModel;
 
 import javax.swing.*;
-import java.util.Set;
 import java.awt.*;
 
 public class Main {
