@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Card {
     private String name;
-    private String color;
+    private int color;
     private int value;
     private boolean inDeck;
     private int column;
@@ -25,7 +25,12 @@ public class Card {
 
     public Card (String cardName){
         this.name = cardName;
-        this.color = cardName.substring(1);
+        if (cardName.substring(1).equals("H") || cardName.substring(1).equals("D")) {
+            this.color = 1;
+        } else {
+            this.color = 0;
+        }
+        //this.color = cardName.substring(1);
         if (cardName.charAt(0) == '0'){
             this.value = 10;
         } else if (cardName.charAt(0) == 'J') {
@@ -48,7 +53,7 @@ public class Card {
     }
 
     public String getName(){return name;}
-    public String getColor(){return color;}
+    public int getColor(){return color;}
     public int getValue(){return value;}
     public int getColumn(){return column;}
     public boolean checkInDeck(){return inDeck;}

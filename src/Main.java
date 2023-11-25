@@ -1,7 +1,14 @@
 import View.HomeViewModel;
+import data_access.GameDataAccessObject;
 import entity.SinglePlayerGame;
 import entity.Game;
+import interface_adapter.MoveCard.MoveCardController;
+import interface_adapter.MoveCard.MoveCardPresenter;
 import interface_adapter.Setup.SetupViewModel;
+import use_case.move_card.MoveCardInputBoundary;
+import use_case.move_card.MoveCardInputData;
+import use_case.move_card.MoveCardInteractor;
+import use_case.move_card.MoveCardOutputBoundary;
 import use_case.setup_game.SetupInputData;
 import use_case.setup_game.SetupInteractor;
 import View.Gameview;
@@ -23,6 +30,8 @@ public class Main {
         //application.setUndecorated(false);
         application.setSize(1100,800);
 
+        GameDataAccessObject gameDataAccessObject = new GameDataAccessObject();
+
         CardLayout cardLayout = new CardLayout();
 
         // The various View objects. Only one view is visible at a time.
@@ -36,10 +45,16 @@ public class Main {
         HomeViewModel homeViewModel = new HomeViewModel();
         SetupViewModel setupViewModel = new SetupViewModel();
 
-        Homeview homeView = SetupUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel);
+        Homeview homeView = SetupUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(homeView, homeView.viewName);
 
-        Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel);
+//        MoveCardOutputBoundary moveCardOutputBoundary = new MoveCardPresenter(viewManagerModel, setupViewModel);
+//
+//        MoveCardInputBoundary moveCardInteractor = new MoveCardInteractor(moveCardOutputBoundary, game);
+//
+//        MoveCardController moveCardController = new MoveCardController(moveCardInteractor);
+
+        Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(gameView, gameView.viewName);
 
         viewManagerModel.setActiveView(homeView.viewName);
