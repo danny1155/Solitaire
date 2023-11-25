@@ -1,34 +1,36 @@
 package View;
 
-import View.SignUpLogIn.LoginView;
-import View.SignUpLogIn.SignupView;
-import View.SignUpLogIn.ViewManager;
-import app.SignUp.SignupUseCaseFactory;
 import interface_adapter.Setup.SetupController;
-import interface_adapter.SignUp.LoginViewModel;
-import interface_adapter.SignUp.SignupViewModel;
-import interface_adapter.SignUp.ViewManagerModel;
+import interface_adapter.Setup.SetupPresenter;
+import interface_adapter.Setup.SetupState;
+
+import use_case.setup_game.SetupInputData;
+import use_case.setup_game.SetupInteractor;
+import use_case.setup_game.SetupOutputBoundary;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-public class Homeview extends JFrame {
+public class Homeview extends JPanel implements ActionListener, PropertyChangeListener {
+    public final String viewName = "Home";
     private JButton playButton;
     private JButton setGameModeButton;
     private JButton scoreboardButton;
-    private JButton SignUpButton;
-    private JButton LoginButton;
     private JButton quitButton;
+    private final HomeViewModel homeViewModel;
+    private final SetupController setupController;
 
-    private SetupController setupController;
+    public Homeview(HomeViewModel homeViewModel, SetupController controller) {
+        this.setupController = controller;
+        this.homeViewModel = homeViewModel;
+        this.homeViewModel.addPropertyChangeListener(this);
 
-    public Homeview() {
         // Window title
-        setTitle("Solitaire Organizer");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 200);
+//        setTitle("Solitaire Organizer");
 
         // Create buttons
         // Play button
@@ -39,25 +41,24 @@ public class Homeview extends JFrame {
                 JOptionPane.showMessageDialog(null, "Initializing the game");
                 //Hide Homeview
                 setVisible(false);
-
-                //Create and display the playsession's Gameview GUI
-                Gameview gameview = new Gameview();
-                gameview.setVisible(true);
+                // SetupState currentState = setupViewModel.getState();
+                System.out.println("1");
+                setupController.execute("SinglePlayerGame");
             }
         });
 
         // Set Game Mode button
-        setGameModeButton = new JButton("Select Game Mode (Default Game Mode: Single Player)");
+        setGameModeButton = new JButton("Select Game Mode");
         setGameModeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //JOptionPane.showMessageDialog(null, "Select your Game Mode");
-                //setVisible(false);
-                dispose();
+                JOptionPane.showMessageDialog(null, "Select your Game Mode");
+                //Hide Homeview
+                setVisible(false);
 
-                //Create and display the playsession's Gameview GUI
-                //SelectGameModeView selectGameModeView = new SelectGameModeView();
-                SelectGameModeView.displayGameModeSelector();
+                //Create and display the Select Game Mode GUI
+                SelectGameModeView selectGameModeView = new SelectGameModeView();
+                selectGameModeView.setVisible(true);
             }
         });
 
@@ -69,124 +70,52 @@ public class Homeview extends JFrame {
                 JOptionPane.showMessageDialog(null, "Check the Scoreboard");
             }
         });
-
-        SignUpButton = new JButton("SignUp");
-        SignUpButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                // The main application window.
-                JFrame application = new JFrame("SignUp");
-                application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//
-                CardLayout cardLayout = new CardLayout();
-//
-                // The various View objects. Only one view is visible at a time.
-                JPanel views = new JPanel(cardLayout);
-                application.add(views);
-//
-                // This keeps track of and manages which view is currently showing.
-                ViewManagerModel viewManagerModel = new ViewManagerModel();
-                new ViewManager(views, cardLayout, viewManagerModel);
-//
-                // The data for the views, such as username and password, are in the ViewModels.
-                // This information will be changed by a presenter object that is reporting the
-                // results from the use case. The ViewModels are observable, and will
-                // be observed by the Views.
-                LoginViewModel loginViewModel = new LoginViewModel();
-                SignupViewModel signupViewModel = new SignupViewModel();
-//
-                SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel);
-                views.add(signupView, signupView.viewName);
-//
-                LoginView loginView = new LoginView(loginViewModel);
-                views.add(loginView, loginView.viewName);
-//
-                viewManagerModel.setActiveView(signupView.viewName);
-                viewManagerModel.firePropertyChanged();
-//
-                application.pack();
-                application.setVisible(true);
-            }
-        });
-
-        LoginButton = new JButton("Login");
-        LoginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                // The main application window.
-                JFrame application = new JFrame("Login");
-                application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//
-                CardLayout cardLayout = new CardLayout();
-//
-                // The various View objects. Only one view is visible at a time.
-                JPanel views = new JPanel(cardLayout);
-                application.add(views);
-//
-                // This keeps track of and manages which view is currently showing.
-                ViewManagerModel viewManagerModel = new ViewManagerModel();
-                new ViewManager(views, cardLayout, viewManagerModel);
-//
-                // The data for the views, such as username and password, are in the ViewModels.
-                // This information will be changed by a presenter object that is reporting the
-                // results from the use case. The ViewModels are observable, and will
-                // be observed by the Views.
-                LoginViewModel loginViewModel = new LoginViewModel();
-                LoginView loginView = new LoginView(loginViewModel);
-                views.add(loginView, loginView.viewName);
-
-                viewManagerModel.setActiveView(loginView.viewName);
-                viewManagerModel.firePropertyChanged();
-//
-                application.pack();
-                application.setVisible(true);
-            }
-        });
-
-
-        quitButton = new JButton("Quit");
-        quitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int result = JOptionPane.showConfirmDialog(Homeview.this,
-                        "Are you sure to quit the game?", "Confirm Quit", JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.YES_OPTION) {
-                    // Terminate the Homeview UI
-                    dispose();
-                }
-            }
-        });
+//        quitButton = new JButton("Quit");
+//        quitButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                int result = JOptionPane.showConfirmDialog(Homeview.this,
+//                        "Are you sure to quit the game?", "Confirm Quit", JOptionPane.YES_NO_OPTION);
+//                if (result == JOptionPane.YES_OPTION) {
+//                    // Terminate the Homeview UI
+//                    dispose();
+//                }
+//            }
+//        });
 
         // Create panels to hold buttons
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(6, 1));
-        buttonPanel.add(playButton);
-        buttonPanel.add(setGameModeButton);
-        buttonPanel.add(scoreboardButton);
-        buttonPanel.add(SignUpButton);
-        buttonPanel.add(LoginButton);
-        buttonPanel.add(quitButton);
+//        JPanel buttonPanel = new JPanel();
+//        buttonPanel.setLayout(new GridLayout(4, 1));
+//        buttonPanel.add(playButton);
+//        buttonPanel.add(setGameModeButton);
+//        buttonPanel.add(scoreboardButton);
+//        buttonPanel.add(quitButton);
+
+        //JPanel buttonPanel = new JPanel();
+        this.setLayout(new GridLayout(4, 1));
+        this.add(playButton);
+        this.add(setGameModeButton);
+        this.add(scoreboardButton);
+//        this.add(quitButton);
 
         // Add the button panel to the main content pane
-        setContentPane(buttonPanel);
+        //setContentPane(buttonPanel);
 
 
         // Set window size and behavior
         setSize(500, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLocationRelativeTo(null);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                Homeview homeview = new Homeview();
-                homeview.setVisible(true);
-            }
-        });
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        System.out.println("Click " + evt.getActionCommand());
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        SetupState state = (SetupState) evt.getNewValue();
+        // setFields(state);
     }
 }
-

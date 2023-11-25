@@ -18,26 +18,26 @@ public class SelectGameModeView extends JFrame {
         JButton easyModeButton = new JButton("SinglePlayer Mode");
         JButton mediumModeButton = new JButton("MultiPlayer Mode");
         JButton hardModeButton = new JButton("Some Mode");
-        JButton backButton = new JButton("Back");
+//        JButton backButton = new JButton("Back");
 
         easyModeButton.addActionListener(new ButtonClickListener(1));
         mediumModeButton.addActionListener(new ButtonClickListener(2));
         hardModeButton.addActionListener(new ButtonClickListener(3));
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to navigate back to HomeView or any other view
-                // For demonstration, let's assume there's a HomeView class
-                dispose(); // Close Gameview
-                Homeview homeview = new Homeview();
-                homeview.setVisible(true); // Assuming HomeView has a default constructor to display the view
-            }
-        });
+//        backButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                // Code to navigate back to HomeView or any other view
+//                // For demonstration, let's assume there's a HomeView class
+//                dispose(); // Close Gameview
+//                Homeview homeview = new Homeview();
+//                homeview.setVisible(true); // Assuming HomeView has a default constructor to display the view
+//            }
+//        });
 
         panel.add(easyModeButton);
         panel.add(mediumModeButton);
         panel.add(hardModeButton);
-        panel.add(backButton);
+//        panel.add(backButton);
 
         setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,4 +87,3 @@ public class SelectGameModeView extends JFrame {
 
 
 }
-
