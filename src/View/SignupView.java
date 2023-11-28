@@ -1,8 +1,10 @@
 package View;
 
-import interface_adapter.SignupController;
-import interface_adapter.SignupState;
-import interface_adapter.SignupViewModel;
+import data_access.GameDataAccessObject;
+import interface_adapter.*;
+import interface_adapter.Setup.SetupController;
+import interface_adapter.Setup.SetupViewModel;
+import use_case.setup_game.SetupInputBoundary;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +26,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
 
     private final JButton signUp;
     private final JButton cancel;
+    private final JButton guest;
 
     public SignupView(SignupController controller, SignupViewModel signupViewModel) {
 
@@ -41,11 +44,14 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         LabelTextPanel repeatPasswordInfo = new LabelTextPanel(
                 new JLabel(signupViewModel.REPEAT_PASSWORD_LABEL), repeatPasswordInputField);
 
+
         JPanel buttons = new JPanel();
         signUp = new JButton(signupViewModel.SIGNUP_BUTTON_LABEL);
         buttons.add(signUp);
         cancel = new JButton(signupViewModel.CANCEL_BUTTON_LABEL);
         buttons.add(cancel);
+        guest = new JButton(signupViewModel.GUEST_BUTTON_LABEL);
+        buttons.add(guest);
 
         signUp.addActionListener(
                 // This creates an anonymous subclass of ActionListener and instantiates it.
@@ -60,6 +66,44 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                     }
                 }
         );
+
+        guest.addActionListener(
+                // This creates an anonymous subclass of ActionListener and instantiates it.
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        JFrame application = new JFrame("Solitaire");
+                        application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                        application.setSize(1100,800);
+
+                        CardLayout cardLayout = new CardLayout();
+
+                        JPanel views = new JPanel(cardLayout);
+                        application.add(views);
+
+                        ViewManagerModel viewManagerModel = new ViewManagerModel();
+                        new ViewManager(views, cardLayout, viewManagerModel);
+
+                        final SetupInputBoundary setupInteractor = null;
+
+                        HomeViewModel homeViewModel = new HomeViewModel();
+                        SetupViewModel setupViewModel = new SetupViewModel();
+                        SignupViewModel signupViewModel = new SignupViewModel();
+                        LoginViewModel loginViewModel = new LoginViewModel();
+                        SetupController setupController = new SetupController(setupInteractor);
+
+                        Homeview homeView = new Homeview(homeViewModel,setupController);
+                        views.add(homeView, homeView.viewName);
+
+                        viewManagerModel.setActiveView(homeView.viewName);
+                        viewManagerModel.firePropertyChanged();
+
+                        homeView.setVisible(true);
+
+                        setVisible(false);
+                    }
+                }
+        );
+
         cancel.addActionListener(this);
 
         // This makes a new KeyListener implementing class, instantiates it, and

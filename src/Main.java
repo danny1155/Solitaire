@@ -1,20 +1,19 @@
-import View.HomeViewModel;
+import View.*;
 import data_access.GameDataAccessObject;
 import entity.SinglePlayerGame;
 import entity.Game;
+import interface_adapter.LoginViewModel;
 import interface_adapter.MoveCard.MoveCardController;
 import interface_adapter.MoveCard.MoveCardPresenter;
 import interface_adapter.Setup.SetupViewModel;
+import interface_adapter.SignupViewModel;
 import use_case.move_card.MoveCardInputBoundary;
 import use_case.move_card.MoveCardInputData;
 import use_case.move_card.MoveCardInteractor;
 import use_case.move_card.MoveCardOutputBoundary;
 import use_case.setup_game.SetupInputData;
 import use_case.setup_game.SetupInteractor;
-import View.Gameview;
-import View.Homeview;
 import interface_adapter.ViewManagerModel;
-import View.ViewManager;
 
 import javax.swing.*;
 import java.util.Set;
@@ -44,6 +43,9 @@ public class Main {
 
         HomeViewModel homeViewModel = new HomeViewModel();
         SetupViewModel setupViewModel = new SetupViewModel();
+        SignupViewModel signupViewModel = new SignupViewModel();
+        LoginViewModel loginViewModel = new LoginViewModel();
+
 
         Homeview homeView = SetupUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(homeView, homeView.viewName);
@@ -57,7 +59,10 @@ public class Main {
         Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(gameView, gameView.viewName);
 
-        viewManagerModel.setActiveView(homeView.viewName);
+        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel);
+        views.add(signupView, signupView.viewName);
+
+        viewManagerModel.setActiveView(signupView.viewName);
         viewManagerModel.firePropertyChanged();
 
         //application.pack();

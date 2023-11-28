@@ -12,6 +12,7 @@ public class SignupViewModel extends ViewModel {
 
     public final String SIGNUP_BUTTON_LABEL = "Sign up";
     public final String CANCEL_BUTTON_LABEL = "Cancel";
+    public final String GUEST_BUTTON_LABEL = "Guest";
 
     private SignupState state = new SignupState();
 
