@@ -36,6 +36,9 @@ public class Main {
         Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, setupViewModel);
         views.add(gameView, gameView.viewName);
 
+        //Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, setupViewModel);
+        //views.add(gameView, gameView.viewName);
+
         viewManagerModel.setActiveView(homeView.viewName);
         viewManagerModel.firePropertyChanged();
 
