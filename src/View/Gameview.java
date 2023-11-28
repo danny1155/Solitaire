@@ -404,6 +404,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 //                    }
 //                });
 //                this.add(timerLabel, BorderLayout.NORTH);
+                resetTimer();
                 gameTimer.start();
             }
             counter++;
@@ -590,6 +591,11 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
             }
 
         }
+    }
+
+    private void resetTimer(){
+        startTime = 0;
+        timerLabel.setText("00:00:00");
     }
 
 
