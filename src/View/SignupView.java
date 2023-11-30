@@ -25,7 +25,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     private final SignupController signupController;
 
     private final JButton signUp;
-    private final JButton cancel;
+    private final JButton quit;
     private final JButton guest;
 
     public SignupView(SignupController controller, SignupViewModel signupViewModel) {
@@ -48,8 +48,8 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         JPanel buttons = new JPanel();
         signUp = new JButton(signupViewModel.SIGNUP_BUTTON_LABEL);
         buttons.add(signUp);
-        cancel = new JButton(signupViewModel.CANCEL_BUTTON_LABEL);
-        buttons.add(cancel);
+        quit = new JButton(signupViewModel.CANCEL_BUTTON_LABEL);
+        buttons.add(quit);
         guest = new JButton(signupViewModel.GUEST_BUTTON_LABEL);
         buttons.add(guest);
 
@@ -62,6 +62,36 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                             signupController.execute(currState.getUsername(),
                                     currState.getPassword(),
                                     currState.getRepeatPassword());
+
+                            //JFrame application = new JFrame("Solitaire");
+                            //application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                            //application.setSize(1100,800);
+//
+                            //CardLayout cardLayout = new CardLayout();
+//
+                            //JPanel views = new JPanel(cardLayout);
+                            //application.add(views);
+//
+                            //ViewManagerModel viewManagerModel = new ViewManagerModel();
+                            //new ViewManager(views, cardLayout, viewManagerModel);
+//
+                            //final SetupInputBoundary setupInteractor = null;
+//
+                            //HomeViewModel homeViewModel = new HomeViewModel();
+                            //SetupViewModel setupViewModel = new SetupViewModel();
+                            //SignupViewModel signupViewModel = new SignupViewModel();
+                            //LoginViewModel loginViewModel = new LoginViewModel();
+                            //SetupController setupController = new SetupController(setupInteractor);
+//
+                            //Homeview homeView = new Homeview(homeViewModel,setupController);
+                            //views.add(homeView, homeView.viewName);
+//
+                            //viewManagerModel.setActiveView(homeView.viewName);
+                            //viewManagerModel.firePropertyChanged();
+//
+                            //homeView.setVisible(true);
+//
+                            //setVisible(false);
                         }
                     }
                 }
@@ -104,7 +134,13 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                 }
         );
 
-        cancel.addActionListener(this);
+        quit.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        System.exit(0);
+                    }
+                }
+        );
 
         // This makes a new KeyListener implementing class, instantiates it, and
         // makes it listen to keystrokes in the usernameInputField.

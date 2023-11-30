@@ -1,11 +1,16 @@
 package View;
 
 import entity.Card;
+import entity.SinglePlayerGame;
 import interface_adapter.MoveCard.MoveCardController;
 import interface_adapter.Setup.SetupController;
 import interface_adapter.Setup.SetupViewModel;
 import interface_adapter.Setup.SetupState;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.Drawcard.DrawcardController;
+import interface_adapter.Drawcard.DrawcardPresenter;
+import use_case.draw_card.DrawcardInteractor;
+import interface_adapter.Drawcard.DrawcardViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,15 +18,16 @@ import java.awt.color.ColorSpace;
 import java.awt.event.*;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.Timer;
 import java.net.URL;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
+import javax.swing.JOptionPane;
+
 
 
 public class Gameview extends JPanel implements ActionListener, PropertyChangeListener{
@@ -37,6 +43,10 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     private final MoveCardController moveCardController;
     private final HomeViewModel homeViewModel;
     private Timer gameTimer;
+    private final DrawcardController drawCardController;
+    private final DrawcardPresenter drawCardPresenter;
+    private final DrawcardViewModel drawCardViewModel;
+
 
     private Point previousPoint;
     private Point imageCorner;
@@ -61,6 +71,15 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         this.moveableCards = new HashMap<>();
         this.canBeDropped = false;
         this.isDragged = false;
+        // Create the DrawcardViewModel first
+        drawCardViewModel = new DrawcardViewModel();
+
+        // Pass the DrawcardViewModel to the DrawcardPresenter
+        drawCardPresenter = new DrawcardPresenter(drawCardViewModel);
+
+        // Now create the DrawcardController with the DrawcardPresenter
+        drawCardController = new DrawcardController(new DrawcardInteractor(drawCardPresenter));
+
 
 
         ClickListener clickListener = new ClickListener();
@@ -118,10 +137,18 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         deckPanel = new JPanel();
         deckPanel.setLayout(new OverlayLayout(deckPanel));
 
+        deckPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                drawCard();
+            }
+        });
+
 
         // Add 24 closely stacked card back images to the deck panel
         for (int i = 0; i < 24; i++) {
             addDeck(deckPanel, i);
+            //System.out.println();
         }
 
         // Create a panel for the foundation
@@ -531,6 +558,35 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
         }
     }
+    int a=0;
+    SinglePlayerGame singlePlayerGame = new SinglePlayerGame();
+    private void drawCard() {
+        String drawnCards = singlePlayerGame.drawCard(1); // Draw one card for simplicity
+
+        // Check if the drawnCards string contains the "image" field
+        if (drawnCards.contains("\"image\":")) {
+            int imageIndex = drawnCards.indexOf("\"image\":");
+            int startQuoteIndex = drawnCards.indexOf("\"", imageIndex + 8);
+            int endQuoteIndex = drawnCards.indexOf("\"", startQuoteIndex + 1);
+
+            if (startQuoteIndex != -1 && endQuoteIndex != -1) {
+                String imageLink = drawnCards.substring(startQuoteIndex + 1, endQuoteIndex);
+
+                // Add the drawn card to the deckPanel
+                addCard(deckPanel, imageLink, i + 1, 0, 0);  // Adjust the position as needed
+                System.out.println("Drawn Card: " + drawnCards);
+                System.out.println(a++);
+            }
+        } else {
+            // No more cards, show a pop-up message
+            JOptionPane.showMessageDialog(this, "No more cards", "Deck Empty", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void handleDrawCardButtonClick() {
+        drawCardController.drawCard();
+    }
+
 
 
 }
