@@ -52,6 +52,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     private Point imageCorner;
     private Map<Integer, ArrayList<Card>> columns;
     private HashMap<Integer, ArrayList<JLabel>> moveableCards;
+    private HashMap<Integer, ArrayList<JLabel>> immoveableCards;
     private JLabel selectedCard;
     private boolean canBeDropped;
     private boolean isDragged;
@@ -69,6 +70,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         this.shownCardsImage = new ArrayList<>();
         this.columns = new HashMap<Integer, ArrayList<Card>>();
         this.moveableCards = new HashMap<>();
+        this.immoveableCards = new HashMap<>();
         this.canBeDropped = false;
         this.isDragged = false;
         // Create the DrawcardViewModel first
@@ -266,7 +268,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     }
 
     // Helper method to add a card back image to the panel
-    private void addCardBack(Container panel, int x, int y) {
+    private void addCardBack(Container panel, int i, int j, int x, int y) {
 
 
         URL cardBackImageUrl = getCardBackImageURL();
@@ -283,7 +285,13 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                 cardBackLabel.setBounds(x, y, 100, 140);
                 //cardBackLabel.setBackground(Color.red);
 
-                panel.add(cardBackLabel);
+                panel.add(cardBackLabel, 0);
+                if (!immoveableCards.containsKey(i) || immoveableCards.get(i) == null) {
+                    immoveableCards.put(i, new ArrayList<>());
+                    immoveableCards.get(i).add(cardBackLabel);
+                } else {
+                    immoveableCards.get(i).add(cardBackLabel);
+                }
 
 
                 // panel.add(cardBackLabel, new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -326,9 +334,15 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
 
                 panel.add(cardLabel, 0);
-                ArrayList<JLabel> list = new ArrayList<JLabel>();
-                list.add(cardLabel);
-                moveableCards.put(i, list);
+                if (!moveableCards.containsKey(i) || moveableCards.get(i) == null) {
+                    moveableCards.put(i, new ArrayList<>());
+                    moveableCards.get(i).add(cardLabel);
+                } else {
+                    moveableCards.get(i).add(0, cardLabel);
+                }
+//                ArrayList<JLabel> list = new ArrayList<JLabel>();
+//                list.add(cardLabel);
+//                moveableCards.put(i, list);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -417,6 +431,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 //                    }
 //                });
 //                this.add(timerLabel, BorderLayout.NORTH);
+                resetTimer();
                 gameTimer.start();
             }
             counter++;
@@ -428,32 +443,28 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         shownCardsImage = state.getCurrentlyShownCardsImage();
         columns = state.getColumns();
 
+
          //Create and configure JLabels for each card and card backs
         for (int i = 0; i < 7; i++) {
             //JLayeredPane columnPanel = new JLayeredPane();
             //columnPanel.setBounds(110 * i + 70,0, 200, 400);
-            columns.get(i + 1).get(columns.get(i + 1).size() - 1).setImage_corner(110 * i + 70, i * 20);
 
-            // addCard(cardsPanel, shownCardsImage.get(i), 110 * i + 70, i * 20);
-            addCard(cardsPanel, columns.get(i + 1).get(i).getImageLink(), i + 1,  110 * i + 70, i * 20);
 
 
             if (i > 0) {
                 // Add card backs starting from the second pile
-                for (int j = 0; j < columns.get(i + 1).size(); j++) {
-                    addCardBack(cardsPanel, 110 * i + 70, 20 * (i - j - 1));
+                for (int j = 0; j < columns.get(i + 1).size() - 1; j++) {
+
+                    addCardBack(cardsPanel, i + 1, j + 1, 110 * i + 70, 20 * j);
 
 //                    JPanel filler = new JPanel();
 //                    columnPanel.add(filler);
                 }
             }
+            columns.get(i + 1).get(columns.get(i + 1).size() - 1).setImage_corner(110 * i + 70, i * 20);
 
-
-
-
-
-
-
+            // addCard(cardsPanel, shownCardsImage.get(i), 110 * i + 70, i * 20);
+            addCard(cardsPanel, columns.get(i + 1).get(i).getImageLink(), i + 1,  110 * i + 70, i * 20);
         }
 
     }
@@ -487,35 +498,78 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
                         }
                     }
+
                 }
             }
         }
         public void mouseReleased(MouseEvent evt) {
-            if (i < 8) {
+            if (i < 8 && j < moveableCards.get(i).size()) {
                 if (isDragged) {
-                    moveCardController.execute(imageCorner, columns.get(i).get(columns.get(i).size() - 1));
+                    moveCardController.execute(imageCorner, columns.get(i).get(columns.get(i).size() - (j + 1)));
                 }
                 SetupState state = setupViewModel.getState();
                 canBeDropped = state.getCanBeMoved();
                 System.out.println(canBeDropped);
-                if (!canBeDropped) {
-                    cardsPanel.remove(selectedCard);
+                if (!canBeDropped || i == state.getMovedColumn()) {
+                    for (int k = j; k >= 0; k--) {
+                        cardsPanel.remove(moveableCards.get(i).get(k));
 
-                    selectedCard.setBounds((int) previousImageCorner.getX(), (int) previousImageCorner.getY(), 100, 140);
+                        moveableCards.get(i).get(k).setBounds((int) previousImageCorner.getX(), (int) previousImageCorner.getY() + (j - k) * 20, 100, 140);
 
-                    cardsPanel.add(selectedCard, 0);
+                        cardsPanel.add(moveableCards.get(i).get(k), 0);
+                    }
                     //imageCorner = previousImageCorner;
                     repaint();
                 } else {
-                    Card card = columns.get(i).get(columns.get(i).size() - (j + 1));
-                    card.setImage_corner(110 * (state.getMovedColumn() - 1) + 70, columns.get(state.getMovedColumn()).size() * 20);
-                    //columns.get(state.getMovedColumn()).get(columns.get(state.getMovedColumn()).size() - 1).setImage_corner(110 * (state.getMovedColumn() - 1) + 70, columns.get(i + 1).size() * 20 - 20);
-                    columns.get(i).remove(columns.get(i).size() - (j + 1));
-                    columns.get(state.getMovedColumn()).add(card);
-                    moveableCards.get(i).remove(0);
-                    moveableCards.get(state.getMovedColumn()).add(0, selectedCard);
+                    System.out.println("drop");
+                    for (int k = j; k >= 0; k--) {
+                        Card card = columns.get(i).get(columns.get(i).size() - (k + 1)); //card being moved
+                        card.setImage_corner(110 * (state.getMovedColumn() - 1) + 70, columns.get(state.getMovedColumn()).size() * 20 + (j - k) * 20); //card being moved
+                        //columns.get(state.getMovedColumn()).get(columns.get(state.getMovedColumn()).size() - 1).setImage_corner(110 * (state.getMovedColumn() - 1) + 70, columns.get(i + 1).size() * 20 - 20);
+
+
+
+                        if (!moveableCards.containsKey(state.getMovedColumn()) || moveableCards.get(state.getMovedColumn()) == null) {
+                            moveableCards.put(state.getMovedColumn(), new ArrayList<>());
+                            moveableCards.get(state.getMovedColumn()).add(moveableCards.get(i).get(k));
+                        } else {
+                            System.out.println(state.getMovedColumn());
+                            moveableCards.get(state.getMovedColumn()).add(0, moveableCards.get(i).get(k));
+                        }
+                        moveableCards.get(i).remove(k); //card being moved
+                    }
+                    if (columns.get(i).size() >= (j + 2) && immoveableCards.get(i) != null && !immoveableCards.get(i).isEmpty() && !columns.get(i).get(columns.get(i).size() - (j + 2)).checkIsShown()) {
+                        cardsPanel.remove(immoveableCards.get(i).get(immoveableCards.get(i).size() - 1)); //hidden card that was right below the card being moved
+                        addCard(cardsPanel, columns.get(i).get(columns.get(i).size() - (j + 2)).getImageLink(), i, immoveableCards.get(i).get(immoveableCards.get(i).size() - 1).getX(),
+                                immoveableCards.get(i).get(immoveableCards.get(i).size() - 1).getY());
+                        //JLabel cardLabel = moveableCards.get(i).get(0);
+                        //moveableCards.get(i).remove(0);
+//                        moveableCards.get(i).add(moveableCards.get(i).get(0));
+//                        moveableCards.get(i).remove(0);
+
+                        //hidden card that was right below the card being moved
+                        columns.get(i).get(columns.get(i).size() - (j + 2)).showCard(); //hidden card that was right below the card being moved
+                        columns.get(i).get(columns.get(i).size() - (j + 2)).setImage_corner(immoveableCards.get(i).get(immoveableCards.get(i).size() - 1).getX(),
+                                immoveableCards.get(i).get(immoveableCards.get(i).size() - 1).getY());
+                        //hidden card that was right below the card being moved
+
+
+                        immoveableCards.get(i).remove(immoveableCards.get(i).size() - 1); //hidden card that was right below the card being moved
+                    }
+
+                    for (int k = 0; k <= j; k++) {
+                        Card card = columns.get(i).get(columns.get(i).size() - 1); //card being moved
+                        columns.get(i).remove(columns.get(i).size() - 1); //card being moved
+                        columns.get(state.getMovedColumn()).add(columns.get(state.getMovedColumn()).size() - k, card); //card being moved
+                    }
+
+
+
+                    //card being moved
 
                 }
+                imageCorner = null;
+                isDragged = false;
                 //selectedCard = null;
             }
         }
@@ -526,6 +580,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
             isDragged = true;
             Point currentPoint = evt.getPoint();
 
+
             //image_corner = columns.get(7).get(6).getImage_corner();
             if (imageCorner != null) {
                 imageCorner.translate(
@@ -533,10 +588,16 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                         (int) (currentPoint.getY() - previousPoint.getY())
                 );
 
-                cardsPanel.remove(selectedCard);
-                selectedCard.setBounds((int) imageCorner.getX(), (int) imageCorner.getY(), 100, 140);
+                    for (int k = j; k >= 0; k--) {
+                        //cardsPanel.remove(selectedCard);
+                        cardsPanel.remove(moveableCards.get(i).get(k));
+                        moveableCards.get(i).get(k).setBounds((int) Math.max(0,Math.min(imageCorner.getX(), cardsPanel.getWidth() - 110)),
+                                (int) Math.max((j - k) * 20, Math.min(imageCorner.getY() + (j - k) * 20, cardsPanel.getHeight() - 150 - j * 20)), 100, 140);
+                        //addCard();
+                        cardsPanel.add(moveableCards.get(i).get(k), 0);
+                    }
 
-                cardsPanel.add(selectedCard, 0);
+
 
 
 //                if (!canBeDropped) {
@@ -552,7 +613,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                 //validate();
                 //invalidate();
                 repaint();
-                System.out.println(imageCorner);
+                //System.out.println();
                 //System.out.println(moveableCardPoints.get(7));
             }
 
@@ -587,6 +648,11 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         drawCardController.drawCard();
     }
 
+
+    private void resetTimer(){
+        startTime = 0;
+        timerLabel.setText("00:00:00");
+    }
 
 
 }
