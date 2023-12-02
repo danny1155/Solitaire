@@ -32,7 +32,7 @@ public class MoveCardInteractor implements MoveCardInputBoundary {
             System.out.println(point.getX());
             //System.out.println(point.getY());
             int size = game.getColumns().get(i + 1).size();
-            if (size == 0 && 110 * i + 70 <= point.getX() + 5 && point.getX() <= 110 * i + 170 && 0 <= point.getY() && point.getY() <= 140 &&
+            if (size == 0 && 110 * i + 110 <= point.getX() + 5 && point.getX() <= 110 * i + 210 && 0 <= point.getY() && point.getY() <= 140 &&
                     card.getValue() == 13) {
                 canBeMoved = true;
                 MoveCardOutputData moveCardOutputData = new MoveCardOutputData(true, i + 1);
@@ -41,7 +41,7 @@ public class MoveCardInteractor implements MoveCardInputBoundary {
                 //game.getColumns().get(i + 1).add(card);
 
                 break;
-            } else if (size != 0 && 110 * i + 70 <= point.getX() + 5 && point.getX() <= 110 * i + 170 && size/*(i + 1)*/ * 20 <= point.getY() && point.getY() <= size * 20 + 140
+            } else if (size != 0 && 110 * i + 110 <= point.getX() + 5 && point.getX() <= 110 * i + 210 && size/*(i + 1)*/ * 20 <= point.getY() && point.getY() <= size * 20 + 140
             && card.getColor() == 1 - game.getColumns().get(i + 1).get(game.getColumns().get(i + 1).size() - 1).getColor() &&
                     card.getValue() == game.getColumns().get(i + 1).get(game.getColumns().get(i + 1).size() - 1).getValue() - 1) {
                 System.out.println("canBeMoved");
