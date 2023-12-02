@@ -113,9 +113,9 @@ public class SinglePlayerGame extends Game {
         initializeDeck();
         alocateHiddenCards(hiddenCards);
         alocateShownCards(shownCards);
-        for (int i = 1; i < 8; i++){
-            Collections.reverse(columns.get(i));
-        }
+//        for (int i = 1; i < 8; i++){
+//            Collections.reverse(columns.get(i));
+//        }
         alocateDeck(deckCards);
 
 

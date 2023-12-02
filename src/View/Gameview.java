@@ -30,7 +30,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     private JLabel timerLabel;
     private long startTime;
     private JPanel deckPanel;
-    private JPanel foundationPanel;
+//    private JPanel foundationPanel;
     private java.util.List<String> shownCardsImage;
     private final SetupViewModel setupViewModel;
     private final SetupController setupController;
@@ -85,7 +85,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
         // Create a panel to hold the cards
         cardsPanel = new JLayeredPane();
-        cardsPanel.setBounds(0,0, 800, 500);
+        cardsPanel.setBounds(0,0, 1000, 600);
         //cardsPanel.setLayout(new GridBagLayout());
         //cardsPanel.setLayout(new GridLayout(1, 7));
 
@@ -126,15 +126,6 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
             addDeck(deckPanel, i);
         }
 
-        // Create a panel for the foundation
-        foundationPanel = new JPanel();
-        foundationPanel.setLayout(new BoxLayout(foundationPanel, BoxLayout.Y_AXIS));
-
-        // Add 4 vertically separated cards to the foundation panel with grey filter
-        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AS.png");
-        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AC.png");
-        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AH.png");
-        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AD.png");
 
         // Create a Timer to update the timer label in real-time
         gameTimer = new Timer(1000, new ActionListener() {
@@ -220,7 +211,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         this.add(cardsPanel, BorderLayout.CENTER);
 
         this.add(miniMenuPanel, BorderLayout.SOUTH);
-        this.add(foundationPanel, BorderLayout.EAST);
+//        this.add(foundationPanel, BorderLayout.EAST);
 
         // Register a KeyAdapter to listen for the Escape key
         addKeyListener(new KeyAdapter() {
@@ -323,6 +314,17 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         }
     }
 
+    private void initializeFoundation(Container panel, String fileName, int y) {
+        ImageIcon image = new ImageIcon(new ImageIcon(fileName).getImage().getScaledInstance(100, 140, Image.SCALE_DEFAULT));
+        JLabel foundationLabel = new JLabel(image);
+        foundationLabel.setOpaque(true);
+        foundationLabel.setBounds(880, y * 150, 100, 140);
+        moveableCards.put(y+8, new ArrayList<>());
+        immoveableCards.put(y+8, new ArrayList<>());
+        immoveableCards.get(y+8).add(foundationLabel);
+        panel.add(foundationLabel, 0);
+    }
+
     // Helper method to get the URL of the card back image
     private URL getCardBackImageURL() {
         try {
@@ -342,36 +344,6 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
             e.printStackTrace();
             return null;
         }
-    }
-
-    // Helper method to add a filtered card image to the panel
-    private void addFilteredCard(Container panel, String cardImageUrl) {
-        URL imageUrl = getCardImageURL(cardImageUrl);
-        if (imageUrl != null) {
-            try {
-                BufferedImage cardImage = ImageIO.read(imageUrl);
-                Image filteredImage = applyGreyFilter(cardImage);
-
-                Icon icon = new ImageIcon(filteredImage);
-                JLabel cardLabel = new JLabel(icon);
-                panel.add(cardLabel);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // Helper method to apply a grey filter to an image
-    private Image applyGreyFilter(Image image) {
-        BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = bufferedImage.createGraphics();
-        g.drawImage(image, 0, 0, null);
-        g.dispose();
-
-        ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
-        colorConvert.filter(bufferedImage, bufferedImage);
-
-        return bufferedImage.getScaledInstance(100, 140, Image.SCALE_DEFAULT);
     }
 
     public void actionPerformed(ActionEvent evt) {
@@ -439,14 +411,21 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
             // addCard(cardsPanel, shownCardsImage.get(i), 110 * i + 70, i * 20);
             addCard(cardsPanel, columns.get(i + 1).get(i).getImageLink(), i + 1,  110 * i + 70, i * 20);
         }
-
+        initializeFoundation(cardsPanel, "images/AC.png",0);
+        initializeFoundation(cardsPanel, "images/AS.png",1);
+        initializeFoundation(cardsPanel, "images/AD.png",2);
+        initializeFoundation(cardsPanel, "images/AH.png",3);
+        for (int i = 8; i < 12; i++){
+            columns.put(i, new ArrayList<>());
+        }
     }
 
     private class ClickListener extends MouseAdapter {
         public void mousePressed(MouseEvent evt) {
 
             previousPoint = evt.getPoint();
-            outer: for (i = 1; i < 8; i++) {
+            outer:
+            for (i = 1; i < 8; i++) {
 //                System.out.println(moveableCards.get(i).getX());
 //                System.out.println(previousPoint.getX());
                 if (!moveableCards.get(i).isEmpty()) {
@@ -471,7 +450,6 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
                         }
                     }
-
                 }
             }
         }
@@ -535,7 +513,6 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                         columns.get(i).remove(columns.get(i).size() - 1); //card being moved
                         columns.get(state.getMovedColumn()).add(columns.get(state.getMovedColumn()).size() - k, card); //card being moved
                     }
-
 
 
                     //card being moved
