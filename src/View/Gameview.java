@@ -36,7 +36,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     private JLabel timerLabel;
     private long startTime;
     private JPanel deckPanel;
-    private JPanel foundationPanel;
+//    private JPanel foundationPanel;
     private java.util.List<String> shownCardsImage;
     private final SetupViewModel setupViewModel;
     private final SetupController setupController;
@@ -104,7 +104,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
         // Create a panel to hold the cards
         cardsPanel = new JLayeredPane();
-        cardsPanel.setBounds(0,0, 800, 500);
+        cardsPanel.setBounds(0,0, 1000, 600);
         //cardsPanel.setLayout(new GridBagLayout());
         //cardsPanel.setLayout(new GridLayout(1, 7));
 
@@ -153,15 +153,6 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 //            //System.out.println();
 //        }
 
-        // Create a panel for the foundation
-        foundationPanel = new JPanel();
-        foundationPanel.setLayout(new BoxLayout(foundationPanel, BoxLayout.Y_AXIS));
-
-        // Add 4 vertically separated cards to the foundation panel with grey filter
-        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AS.png");
-        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AC.png");
-        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AH.png");
-        addFilteredCard(foundationPanel, "https://deckofcardsapi.com/static/img/AD.png");
 
         // Create a Timer to update the timer label in real-time
         gameTimer = new Timer(1000, new ActionListener() {
@@ -247,7 +238,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         this.add(cardsPanel, BorderLayout.CENTER);
 
         this.add(miniMenuPanel, BorderLayout.SOUTH);
-        this.add(foundationPanel, BorderLayout.EAST);
+//        this.add(foundationPanel, BorderLayout.EAST);
 
         // Register a KeyAdapter to listen for the Escape key
         addKeyListener(new KeyAdapter() {
@@ -351,6 +342,17 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         }
     }
 
+    private void initializeFoundation(Container panel, String fileName, int y) {
+        ImageIcon image = new ImageIcon(new ImageIcon(fileName).getImage().getScaledInstance(100, 140, Image.SCALE_DEFAULT));
+        JLabel foundationLabel = new JLabel(image);
+        foundationLabel.setOpaque(true);
+        foundationLabel.setBounds(880, y * 150, 100, 140);
+        moveableCards.put(y+8, new ArrayList<>());
+        immoveableCards.put(y+8, new ArrayList<>());
+        immoveableCards.get(y+8).add(foundationLabel);
+        panel.add(foundationLabel, 0);
+    }
+
     // Helper method to get the URL of the card back image
     private URL getCardBackImageURL() {
         try {
@@ -370,36 +372,6 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
             e.printStackTrace();
             return null;
         }
-    }
-
-    // Helper method to add a filtered card image to the panel
-    private void addFilteredCard(Container panel, String cardImageUrl) {
-        URL imageUrl = getCardImageURL(cardImageUrl);
-        if (imageUrl != null) {
-            try {
-                BufferedImage cardImage = ImageIO.read(imageUrl);
-                Image filteredImage = applyGreyFilter(cardImage);
-
-                Icon icon = new ImageIcon(filteredImage);
-                JLabel cardLabel = new JLabel(icon);
-                panel.add(cardLabel);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // Helper method to apply a grey filter to an image
-    private Image applyGreyFilter(Image image) {
-        BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = bufferedImage.createGraphics();
-        g.drawImage(image, 0, 0, null);
-        g.dispose();
-
-        ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
-        colorConvert.filter(bufferedImage, bufferedImage);
-
-        return bufferedImage.getScaledInstance(100, 140, Image.SCALE_DEFAULT);
     }
 
     public void actionPerformed(ActionEvent evt) {
@@ -470,14 +442,21 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
             // addCard(cardsPanel, shownCardsImage.get(i), 110 * i + 70, i * 20);
             addCard(cardsPanel, columns.get(i + 1).get(i).getImageLink(), i + 1,  110 * i + 110, i * 20);
         }
-
+        initializeFoundation(cardsPanel, "images/AC.png",0);
+        initializeFoundation(cardsPanel, "images/AS.png",1);
+        initializeFoundation(cardsPanel, "images/AD.png",2);
+        initializeFoundation(cardsPanel, "images/AH.png",3);
+        for (int i = 8; i < 12; i++){
+            columns.put(i, new ArrayList<>());
+        }
     }
 
     private class ClickListener extends MouseAdapter {
         public void mousePressed(MouseEvent evt) {
 
             previousPoint = evt.getPoint();
-            outer: for (i = 1; i < 8; i++) {
+            outer:
+            for (i = 1; i < 12; i++) {
 //                System.out.println(moveableCards.get(i).getX());
 //                System.out.println(previousPoint.getX());
                 if (0 <= previousPoint.getX() && previousPoint.getX() <= 100 && 0 <= previousPoint.getY() && previousPoint.getY() <= 140) {
@@ -505,12 +484,11 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
                         }
                     }
-
                 }
             }
         }
         public void mouseReleased(MouseEvent evt) {
-            if (i < 8 && j < moveableCards.get(i).size()) {
+            if (i < 12 && j < moveableCards.get(i).size()) {
                 if (isDragged) {
                     moveCardController.execute(imageCorner, columns.get(i).get(columns.get(i).size() - (j + 1)));
                 }
@@ -529,6 +507,23 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                     repaint();
                 } else {
                     System.out.println("drop");
+                if (imageCorner.getX() >= 880) {
+                    Card card = columns.get(i).get(columns.get(i).size() - 1); //card being moved
+                    if (-30 <= imageCorner.getY() && imageCorner.getY() <= 100) {
+                        card.setImage_corner(880, 0); //card being moved
+                        moveableCards.get(8).add(0, moveableCards.get(i).get(0));
+                    } else if (120 <= imageCorner.getY() && imageCorner.getY() <= 250) {
+                        card.setImage_corner(880, 150);
+                        moveableCards.get(9).add(0, moveableCards.get(i).get(0));
+                    } else if (270 <= imageCorner.getY() && imageCorner.getY() <= 400) {
+                        card.setImage_corner(880, 300);
+                        moveableCards.get(10).add(0, moveableCards.get(i).get(0));
+                    } else if (420 <= imageCorner.getY() && imageCorner.getY() <= 550) {
+                        card.setImage_corner(880, 450);
+                        moveableCards.get(11).add(0, moveableCards.get(i).get(0));
+                    }
+                    //moveableCards.get(i).add(0, moveableCards.get(i).get(0));
+                } else {
                     for (int k = j; k >= 0; k--) {
                         Card card = columns.get(i).get(columns.get(i).size() - (k + 1)); //card being moved
                         card.setImage_corner(110 * (state.getMovedColumn() - 1) + 110, columns.get(state.getMovedColumn()).size() * 20 + (j - k) * 20); //card being moved
@@ -545,6 +540,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                         }
                         moveableCards.get(i).remove(k); //card being moved
                     }
+                }
                     if (columns.get(i).size() >= (j + 2) && immoveableCards.get(i) != null && !immoveableCards.get(i).isEmpty() && !columns.get(i).get(columns.get(i).size() - (j + 2)).checkIsShown()) {
                         cardsPanel.remove(immoveableCards.get(i).get(immoveableCards.get(i).size() - 1)); //hidden card that was right below the card being moved
                         addCard(cardsPanel, columns.get(i).get(columns.get(i).size() - (j + 2)).getImageLink(), i, immoveableCards.get(i).get(immoveableCards.get(i).size() - 1).getX(),
@@ -569,7 +565,6 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                         columns.get(i).remove(columns.get(i).size() - 1); //card being moved
                         columns.get(state.getMovedColumn()).add(columns.get(state.getMovedColumn()).size() - k, card); //card being moved
                     }
-
 
 
                     //card being moved
