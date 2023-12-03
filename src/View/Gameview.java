@@ -425,7 +425,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
             previousPoint = evt.getPoint();
             outer:
-            for (i = 1; i < 8; i++) {
+            for (i = 1; i < 12; i++) {
 //                System.out.println(moveableCards.get(i).getX());
 //                System.out.println(previousPoint.getX());
                 if (!moveableCards.get(i).isEmpty()) {
@@ -454,7 +454,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
             }
         }
         public void mouseReleased(MouseEvent evt) {
-            if (i < 8 && j < moveableCards.get(i).size()) {
+            if (i < 12 && j < moveableCards.get(i).size()) {
                 if (isDragged) {
                     moveCardController.execute(imageCorner, columns.get(i).get(columns.get(i).size() - (j + 1)));
                 }
@@ -473,6 +473,23 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                     repaint();
                 } else {
                     System.out.println("drop");
+                if (imageCorner.getX() >= 880) {
+                    Card card = columns.get(i).get(columns.get(i).size() - 1); //card being moved
+                    if (-30 <= imageCorner.getY() && imageCorner.getY() <= 100) {
+                        card.setImage_corner(880, 0); //card being moved
+                        moveableCards.get(8).add(0, moveableCards.get(i).get(0));
+                    } else if (120 <= imageCorner.getY() && imageCorner.getY() <= 250) {
+                        card.setImage_corner(880, 150);
+                        moveableCards.get(9).add(0, moveableCards.get(i).get(0));
+                    } else if (270 <= imageCorner.getY() && imageCorner.getY() <= 400) {
+                        card.setImage_corner(880, 300);
+                        moveableCards.get(10).add(0, moveableCards.get(i).get(0));
+                    } else if (420 <= imageCorner.getY() && imageCorner.getY() <= 550) {
+                        card.setImage_corner(880, 450);
+                        moveableCards.get(11).add(0, moveableCards.get(i).get(0));
+                    }
+                    //moveableCards.get(i).add(0, moveableCards.get(i).get(0));
+                } else {
                     for (int k = j; k >= 0; k--) {
                         Card card = columns.get(i).get(columns.get(i).size() - (k + 1)); //card being moved
                         card.setImage_corner(110 * (state.getMovedColumn() - 1) + 70, columns.get(state.getMovedColumn()).size() * 20 + (j - k) * 20); //card being moved
@@ -489,6 +506,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                         }
                         moveableCards.get(i).remove(k); //card being moved
                     }
+                }
                     if (columns.get(i).size() >= (j + 2) && immoveableCards.get(i) != null && !immoveableCards.get(i).isEmpty() && !columns.get(i).get(columns.get(i).size() - (j + 2)).checkIsShown()) {
                         cardsPanel.remove(immoveableCards.get(i).get(immoveableCards.get(i).size() - 1)); //hidden card that was right below the card being moved
                         addCard(cardsPanel, columns.get(i).get(columns.get(i).size() - (j + 2)).getImageLink(), i, immoveableCards.get(i).get(immoveableCards.get(i).size() - 1).getX(),
