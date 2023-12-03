@@ -13,6 +13,7 @@ public class SinglePlayerGame extends Game {
     private String deckID;
     private String shownCards;
     private String hiddenCards;
+    private String deckCards;
     private String cardSelected;
     private ArrayList<Card> cardsInplay;
     private Map<Integer, ArrayList<Card>> columns;
@@ -88,6 +89,19 @@ public class SinglePlayerGame extends Game {
         }
         shownCards = shownCards.substring(0, shownCards.length() - 1);
 
+        deckCards = "";
+        String deckCardsData;
+        deckCardsData = drawCard(24);
+        List<String> deckCardsDataList;
+        deckCardsDataList = Arrays.stream(deckCardsData.split("\"code\": ")).toList();
+        List<String> deckCardsDataListCopy = new ArrayList<>(deckCardsDataList);
+        deckCardsDataListCopy.remove(0);
+        for (String dict : deckCardsDataListCopy) {
+            deckCards = deckCards.concat(dict.substring(1,3) + ",");
+        }
+        deckCards = deckCards.substring(0, deckCards.length() - 1);
+
+
         HttpResponse<String> createShownPileResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards=");
         HttpResponse<String> addToShownPileResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards=" + shownCards);
 
@@ -99,22 +113,28 @@ public class SinglePlayerGame extends Game {
         initializeDeck();
         alocateHiddenCards(hiddenCards);
         alocateShownCards(shownCards);
+//        for (int i = 1; i < 8; i++){
+//            Collections.reverse(columns.get(i));
+//        }
+        alocateDeck(deckCards);
 
 
 
         System.out.println(hiddenCards);
         System.out.println(shownCards);
-        int i = 0;
-        for (Card card : cardsInplay){
-            if (card.getIndex() != 0){
-                i += 1;
+        System.out.println(deckCards);
+        for (int i = 1; i < 12; i++){
+            ArrayList<String> cardsInStack = new ArrayList<>();
+            for (Card card : columns.get(i)){
+                cardsInStack.add(card.getName());
             }
+            System.out.println("Stack" + i +" :" + cardsInStack);
         }
-        System.out.println(i);
-        for (Card card : cardsInplay){
-            if (card.getColumn() != 0){
-        System.out.println("Card: " + card.getName() + ", isShown: " + card.checkIsShown() + ", column: "
-                + card.getColumn() + ", index: " + card.getIndex() + ", isTop: " + card.isTopCard(columns.get(card.getColumn())));}}
+        ArrayList<String> cardsInDeck = new ArrayList<>();
+        for (Card card : columns.get(0)){
+            cardsInDeck.add(card.getName());
+        }
+        System.out.println("Deck: " + cardsInDeck);
         System.out.println(addToHiddenPileResponse.body());
         System.out.println(addToShownPileResponse.body());
         for (String code : shownCards.split(",")) {
@@ -216,6 +236,20 @@ public class SinglePlayerGame extends Game {
             columnIndex += numPerStack;
             columnInt += 1;
             numPerStack += 1;
+        }
+    }
+
+    private void alocateDeck (String cardsInDeck){
+        List<String> cardNames = Arrays.asList(cardsInDeck.split(","));
+        ArrayList<Card> copiedList = new ArrayList<>(columns.get(0));
+        columns.get(0).clear();
+        for (String cardName : cardNames) {
+            for (Card card : copiedList) {
+                if (cardName.equals(card.getName())) {
+                    columns.get(0).add(card);
+                    card.setIndex(columns.get(0));
+                }
+            }
         }
     }
 }
