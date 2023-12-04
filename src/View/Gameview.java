@@ -455,13 +455,16 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         public void mousePressed(MouseEvent evt) {
 
             previousPoint = evt.getPoint();
+            if (0 <= previousPoint.getX() && previousPoint.getX() <= 100 && 0 <= previousPoint.getY() && previousPoint.getY() <= 140) {
+                drawCard();
+            }
             outer:
             for (i = 1; i < 12; i++) {
 //                System.out.println(moveableCards.get(i).getX());
 //                System.out.println(previousPoint.getX());
-                if (0 <= previousPoint.getX() && previousPoint.getX() <= 100 && 0 <= previousPoint.getY() && previousPoint.getY() <= 140) {
-                    drawCard();
-                }
+                //if (0 <= previousPoint.getX() && previousPoint.getX() <= 100 && 0 <= previousPoint.getY() && previousPoint.getY() <= 140) {
+                //    drawCard();
+                //}
                 if (!moveableCards.get(i).isEmpty()) {
                     j = 0;
                     if (moveableCards.get(i).get(0).getX() <= previousPoint.getX() && previousPoint.getX() <= moveableCards.get(i).get(0).getX() + 100.0
@@ -625,27 +628,18 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 //    SinglePlayerGame singlePlayerGame = new SinglePlayerGame();
     private void drawCard() {
         //String drawnCards = singlePlayerGame.drawCard(1); // Draw one card for simplicity
+        //addCard(cardsPanel, columns.get(0).get(0).getImageLink(), 0, 0, 150);
+        //System.out.println(columns.get(0).size());
+        //columns.get(0).remove(0);
+
+        if (columns.get(0).isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No more cards", "Deck Empty", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
         addCard(cardsPanel, columns.get(0).get(0).getImageLink(), 0, 0, 150);
         System.out.println(columns.get(0).size());
         columns.get(0).remove(0);
-        // Check if the drawnCards string contains the "image" field
-//        if (drawnCards.contains("\"image\":")) {
-//            int imageIndex = drawnCards.indexOf("\"image\":");
-//            int startQuoteIndex = drawnCards.indexOf("\"", imageIndex + 8);
-//            int endQuoteIndex = drawnCards.indexOf("\"", startQuoteIndex + 1);
-//
-//            if (startQuoteIndex != -1 && endQuoteIndex != -1) {
-//                String imageLink = drawnCards.substring(startQuoteIndex + 1, endQuoteIndex);
-//
-//                // Add the drawn card to the deckPanel
-//                addCard(deckPanel, imageLink, i + 1, 0, 0);  // Adjust the position as needed
-//                System.out.println("Drawn Card: " + drawnCards);
-//                System.out.println(a++);
-//            }
-//        } else {
-//            // No more cards, show a pop-up message
-//            JOptionPane.showMessageDialog(this, "No more cards", "Deck Empty", JOptionPane.INFORMATION_MESSAGE);
-//        }
     }
 
     private void handleDrawCardButtonClick() {
