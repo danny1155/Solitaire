@@ -4,6 +4,8 @@ import data_access.GameDataAccessObject;
 import interface_adapter.*;
 import interface_adapter.Setup.SetupController;
 import interface_adapter.Setup.SetupViewModel;
+import use_case.SignupInputBoundary;
+import use_case.logInInputBoundary;
 import use_case.setup_game.SetupInputBoundary;
 
 import javax.swing.*;
@@ -25,6 +27,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     private final SignupController signupController;
 
     private final JButton signUp;
+    private final JButton login;
     private final JButton quit;
     private final JButton guest;
 
@@ -48,6 +51,8 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         JPanel buttons = new JPanel();
         signUp = new JButton(signupViewModel.SIGNUP_BUTTON_LABEL);
         buttons.add(signUp);
+        login = new JButton(signupViewModel.LOGIN_BUTTON_LABEL);
+        buttons.add(login);
         quit = new JButton(signupViewModel.CANCEL_BUTTON_LABEL);
         buttons.add(quit);
         guest = new JButton(signupViewModel.GUEST_BUTTON_LABEL);
@@ -92,6 +97,18 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                             //homeView.setVisible(true);
 //
                             //setVisible(false);
+                        }
+                    }
+                }
+        );
+
+        login.addActionListener(
+                // This creates an anonymous subclass of ActionListener and instantiates it.
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        if (evt.getSource().equals(login)) {
+                            viewManagerModel.setActiveView(loginViewModel.getViewName());
+                            viewManagerModel.firePropertyChanged();
                         }
                     }
                 }

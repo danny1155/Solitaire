@@ -1,9 +1,6 @@
 package View;
 
 import interface_adapter.*;
-import interface_adapter.Setup.SetupController;
-import interface_adapter.Setup.SetupViewModel;
-import use_case.setup_game.SetupInputBoundary;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,8 +50,6 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         JPanel buttons = new JPanel();
         logIn = new JButton(loginViewModel.LOGIN_BUTTON_LABEL);
         buttons.add(logIn);
-        SignUp = new JButton(loginViewModel.CANCEL_BUTTON_LABEL);
-        buttons.add(SignUp);
 
         logIn.addActionListener(
                 new ActionListener() {
@@ -64,41 +59,6 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
                             LoginState currState = loginViewModel.getState();
                             loginController.execute(currState.getUsername(),
                                     currState.getPassword());
-                            System.out.println("hi");
-                        }
-                    }
-                }
-        );
-        SignUp.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(SignUp)) {
-                            CardLayout cardLayout = new CardLayout();
-//
-                            JPanel views = new JPanel(cardLayout);
-                            //application.add(views);
-
-                            ViewManagerModel viewManagerModel = new ViewManagerModel();
-                            new ViewManager(views, cardLayout, viewManagerModel);
-
-                            final SetupInputBoundary setupInteractor = null;
-
-                            HomeViewModel homeViewModel = new HomeViewModel();
-                            SetupViewModel setupViewModel = new SetupViewModel();
-                            SignupViewModel signupViewModel = new SignupViewModel();
-                            LoginViewModel loginViewModel = new LoginViewModel();
-                            SetupController setupController = new SetupController(setupInteractor);
-
-                            Homeview homeView = new Homeview(homeViewModel,setupController);
-                            views.add(homeView, homeView.viewName);
-
-                            viewManagerModel.setActiveView(homeView.viewName);
-                            viewManagerModel.firePropertyChanged();
-
-                            homeView.setVisible(true);
-
-                            setVisible(false);
                         }
                     }
                 }
