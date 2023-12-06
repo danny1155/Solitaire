@@ -55,19 +55,12 @@ public class Card {
     public String getName(){return name;}
     public int getColor(){return color;}
     public int getValue(){return value;}
-    public int getColumn(){return column;}
-    public boolean checkInDeck(){return inDeck;}
     public String getImageLink() {return imageLink;}
     public Point getImage_corner() {return image_corner;}
-    public boolean checkIsSelected() {return isSelected;}
     public boolean checkIsShown() {return isShown;}
     public void showCard(){
         this.isShown = true;
     }
-    public void selectCard(){
-        this.isSelected = true;
-    }
-    public int getIndex(){return index;}
     public void moveCard(int Destination){
         this.column = Destination;
         this.isSelected = false;
@@ -76,9 +69,5 @@ public class Card {
         this.index = column.indexOf(this);
     }
     public void setImage_corner(int x, int y) {this.image_corner = new Point(x, y);}
-
-    public boolean isTopCard(ArrayList<Card> column){
-        return column.size() - 1 - column.indexOf(this) == 0;
-    }
 
 }
