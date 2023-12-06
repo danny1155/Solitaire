@@ -62,7 +62,10 @@ public class Main {
         SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel);
         views.add(signupView, signupView.viewName);
 
-        viewManagerModel.setActiveView(signupView.viewName);
+        LoginView loginView = logInUseCaseFactory.create(viewManagerModel, homeViewModel, loginViewModel, signupViewModel);
+        views.add(signupView, loginView.viewName);
+
+        viewManagerModel.setActiveView(loginView.viewName);
         viewManagerModel.firePropertyChanged();
 
         //application.pack();

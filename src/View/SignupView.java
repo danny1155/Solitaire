@@ -101,14 +101,14 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                 // This creates an anonymous subclass of ActionListener and instantiates it.
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
-                        JFrame application = new JFrame("Solitaire");
-                        application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                        application.setSize(1100,800);
+                        //JFrame application = new JFrame("Solitaire");
+                        //application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                        //application.setSize(1100,800);
 
                         CardLayout cardLayout = new CardLayout();
-
+//
                         JPanel views = new JPanel(cardLayout);
-                        application.add(views);
+                        //application.add(views);
 
                         ViewManagerModel viewManagerModel = new ViewManagerModel();
                         new ViewManager(views, cardLayout, viewManagerModel);
