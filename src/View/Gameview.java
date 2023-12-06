@@ -1,11 +1,16 @@
 package View;
 
 import entity.Card;
+import entity.SinglePlayerGame;
 import interface_adapter.MoveCard.MoveCardController;
 import interface_adapter.Setup.SetupController;
 import interface_adapter.Setup.SetupViewModel;
 import interface_adapter.Setup.SetupState;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.Drawcard.DrawcardController;
+import interface_adapter.Drawcard.DrawcardPresenter;
+import use_case.draw_card.DrawcardInteractor;
+import interface_adapter.Drawcard.DrawcardViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,15 +18,16 @@ import java.awt.color.ColorSpace;
 import java.awt.event.*;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.Timer;
 import java.net.URL;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
+import javax.swing.JOptionPane;
+
 
 
 public class Gameview extends JPanel implements ActionListener, PropertyChangeListener{
@@ -37,6 +43,10 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     private final MoveCardController moveCardController;
     private final HomeViewModel homeViewModel;
     private Timer gameTimer;
+    private final DrawcardController drawCardController;
+    private final DrawcardPresenter drawCardPresenter;
+    private final DrawcardViewModel drawCardViewModel;
+
 
     private Point previousPoint;
     private Point imageCorner;
@@ -63,6 +73,15 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         this.immoveableCards = new HashMap<>();
         this.canBeDropped = false;
         this.isDragged = false;
+        // Create the DrawcardViewModel first
+        drawCardViewModel = new DrawcardViewModel();
+
+        // Pass the DrawcardViewModel to the DrawcardPresenter
+        drawCardPresenter = new DrawcardPresenter(drawCardViewModel);
+
+        // Now create the DrawcardController with the DrawcardPresenter
+        drawCardController = new DrawcardController(new DrawcardInteractor(drawCardPresenter));
+
 
 
         ClickListener clickListener = new ClickListener();
@@ -117,14 +136,22 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
 
         // Create a panel for the deck
-        deckPanel = new JPanel();
-        deckPanel.setLayout(new OverlayLayout(deckPanel));
+//        deckPanel = new JPanel();
+//        deckPanel.setLayout(new OverlayLayout(deckPanel));
+
+//        deckPanel.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                drawCard();
+//            }
+//        });
 
 
         // Add 24 closely stacked card back images to the deck panel
-        for (int i = 0; i < 24; i++) {
-            addDeck(deckPanel, i);
-        }
+//        for (int i = 0; i < 24; i++) {
+//            addDeck(deckPanel, i);
+//            //System.out.println();
+//        }
 
 
         // Create a Timer to update the timer label in real-time
@@ -207,7 +234,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         miniMenuPanel.setVisible(true);
         this.setLayout(new BorderLayout());
         this.add(timerLabel, BorderLayout.NORTH);
-        this.add(deckPanel, BorderLayout.WEST);
+        //this.add(deckPanel, BorderLayout.WEST);
         this.add(cardsPanel, BorderLayout.CENTER);
 
         this.add(miniMenuPanel, BorderLayout.SOUTH);
@@ -274,9 +301,10 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                 Image image = cardBackImage.getScaledInstance(100, 140, Image.SCALE_DEFAULT);
                 Icon icon = new ImageIcon(image);
                 JLabel cardBackLabel = new JLabel(icon);
+                cardBackLabel.setBounds(0,0,100,140);
                 cardBackLabel.setOpaque(true);
-                cardBackLabel.setAlignmentY(0.0f);
-                panel.add(cardBackLabel);
+                //cardBackLabel.setAlignmentY(0.0f);
+                panel.add(cardBackLabel, 0);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -388,7 +416,10 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         shownCardsImage = state.getCurrentlyShownCardsImage();
         columns = state.getColumns();
 
-
+        for (int i = 0; i < 24; i++) {
+            addDeck(cardsPanel, i);
+            //System.out.println();
+        }
          //Create and configure JLabels for each card and card backs
         for (int i = 0; i < 7; i++) {
             //JLayeredPane columnPanel = new JLayeredPane();
@@ -400,16 +431,16 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                 // Add card backs starting from the second pile
                 for (int j = 0; j < columns.get(i + 1).size() - 1; j++) {
 
-                    addCardBack(cardsPanel, i + 1, j + 1, 110 * i + 70, 20 * j);
+                    addCardBack(cardsPanel, i + 1, j + 1, 110 * i + 110, 20 * j);
 
 //                    JPanel filler = new JPanel();
 //                    columnPanel.add(filler);
                 }
             }
-            columns.get(i + 1).get(columns.get(i + 1).size() - 1).setImage_corner(110 * i + 70, i * 20);
+            columns.get(i + 1).get(columns.get(i + 1).size() - 1).setImage_corner(110 * i + 110, i * 20);
 
             // addCard(cardsPanel, shownCardsImage.get(i), 110 * i + 70, i * 20);
-            addCard(cardsPanel, columns.get(i + 1).get(i).getImageLink(), i + 1,  110 * i + 70, i * 20);
+            addCard(cardsPanel, columns.get(i + 1).get(i).getImageLink(), i + 1,  110 * i + 110, i * 20);
         }
         initializeFoundation(cardsPanel, "images/AC.png",0);
         initializeFoundation(cardsPanel, "images/AS.png",1);
@@ -424,13 +455,19 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         public void mousePressed(MouseEvent evt) {
 
             previousPoint = evt.getPoint();
+            if (0 <= previousPoint.getX() && previousPoint.getX() <= 100 && 0 <= previousPoint.getY() && previousPoint.getY() <= 140) {
+                drawCard();
+            }
             outer:
             for (i = 1; i < 12; i++) {
 //                System.out.println(moveableCards.get(i).getX());
 //                System.out.println(previousPoint.getX());
+                //if (0 <= previousPoint.getX() && previousPoint.getX() <= 100 && 0 <= previousPoint.getY() && previousPoint.getY() <= 140) {
+                //    drawCard();
+                //}
                 if (!moveableCards.get(i).isEmpty()) {
                     j = 0;
-                    if (moveableCards.get(i).get(0).getX() <= previousPoint.getX() - 100 && previousPoint.getX() - 100 <= moveableCards.get(i).get(0).getX() + 100.0
+                    if (moveableCards.get(i).get(0).getX() <= previousPoint.getX() && previousPoint.getX() <= moveableCards.get(i).get(0).getX() + 100.0
                             && moveableCards.get(i).get(0).getY() + 20 <= previousPoint.getY() && previousPoint.getY() <= moveableCards.get(i).get(0).getY() + 160.0) {
                         imageCorner = (Point) columns.get(i).get(columns.get(i).size() - 1).getImage_corner().clone();
                         //imageCorner.move(imageCorner.getX() + 1, imageCorner.getY());
@@ -441,7 +478,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                     }
 
                     for (j = 1; j < moveableCards.get(i).size(); j++) {
-                        if (moveableCards.get(i).get(j).getX() <= previousPoint.getX() - 100 && previousPoint.getX() - 100 <= moveableCards.get(i).get(j).getX() + 100.0
+                        if (moveableCards.get(i).get(j).getX() <= previousPoint.getX() && previousPoint.getX() <= moveableCards.get(i).get(j).getX() + 100.0
                                 && moveableCards.get(i).get(j).getY() + 20 <= previousPoint.getY() && previousPoint.getY() <= moveableCards.get(i).get(j).getY() + 40.0) {
                             imageCorner = (Point) columns.get(i).get(columns.get(i).size() - (j + 1)).getImage_corner().clone();
                             previousImageCorner = (Point) columns.get(i).get(columns.get(i).size() - (j + 1)).getImage_corner().clone();
@@ -492,7 +529,7 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
                 } else {
                     for (int k = j; k >= 0; k--) {
                         Card card = columns.get(i).get(columns.get(i).size() - (k + 1)); //card being moved
-                        card.setImage_corner(110 * (state.getMovedColumn() - 1) + 70, columns.get(state.getMovedColumn()).size() * 20 + (j - k) * 20); //card being moved
+                        card.setImage_corner(110 * (state.getMovedColumn() - 1) + 110, columns.get(state.getMovedColumn()).size() * 20 + (j - k) * 20); //card being moved
                         //columns.get(state.getMovedColumn()).get(columns.get(state.getMovedColumn()).size() - 1).setImage_corner(110 * (state.getMovedColumn() - 1) + 70, columns.get(i + 1).size() * 20 - 20);
 
 
@@ -587,6 +624,28 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
         }
     }
+//    int a=0;
+//    SinglePlayerGame singlePlayerGame = new SinglePlayerGame();
+    private void drawCard() {
+        //String drawnCards = singlePlayerGame.drawCard(1); // Draw one card for simplicity
+        //addCard(cardsPanel, columns.get(0).get(0).getImageLink(), 0, 0, 150);
+        //System.out.println(columns.get(0).size());
+        //columns.get(0).remove(0);
+
+        if (columns.get(0).isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No more cards", "Deck Empty", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        addCard(cardsPanel, columns.get(0).get(0).getImageLink(), 0, 0, 150);
+        System.out.println(columns.get(0).size());
+        columns.get(0).remove(0);
+    }
+
+    private void handleDrawCardButtonClick() {
+        drawCardController.drawCard();
+    }
+
 
     private void resetTimer(){
         startTime = 0;
