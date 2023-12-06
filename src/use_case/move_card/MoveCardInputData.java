@@ -8,16 +8,19 @@ public class MoveCardInputData {
     // Add fields as needed for setup data
     private Point cardPoint;
     private Card card;  // Example field for game mode selection
+    private int numCardsMoved;
 
-    public MoveCardInputData(Point cardPoint, Card card) {
+    public MoveCardInputData(Point cardPoint, Card card, int numCardsMoved) {
         this.card = card;
         this.cardPoint = cardPoint;
+        this.numCardsMoved = numCardsMoved;
     }
 
     public Point getCardPoint() {
         return cardPoint;
     }
     public Card getCard() {return card;}
+    public int getNumCardsMoved() {return numCardsMoved;}
 
     // Add other getters and setters for additional setup data
 }

@@ -27,7 +27,7 @@ public class MoveCardInteractor implements MoveCardInputBoundary {
         System.out.println(point.getY());
         System.out.println(card.getName());
         System.out.println(card.getValue());
-        if (point.getX() >= 880 && point.getX() <= 980){
+        if (point.getX() >= 880 && point.getX() <= 980 && moveCardInputData.getNumCardsMoved() == 1){
             System.out.println("By foundation X");
             if (point.getY() >= -30 && point.getY() <= 100){
                 System.out.println("By foundation Y");
@@ -38,7 +38,7 @@ public class MoveCardInteractor implements MoveCardInputBoundary {
                         canBeMoved = true;
                         MoveCardOutputData moveCardOutputData = new MoveCardOutputData(true, 8);
                         moveCardPresenter.prepareSuccessView(moveCardOutputData);
-                    } else if (!game.getColumns().get(8).isEmpty() && card.getValue() == game.getColumns().get(8).get(0).getValue() + 1) {
+                    } else if (!game.getColumns().get(8).isEmpty() && card.getValue() == game.getColumns().get(8).get(game.getColumns().get(8).size() - 1).getValue() + 1) {
                         System.out.println("Add card to Club Foundation");
                         canBeMoved = true;
                         MoveCardOutputData moveCardOutputData = new MoveCardOutputData(true, 8);
@@ -53,7 +53,7 @@ public class MoveCardInteractor implements MoveCardInputBoundary {
                         canBeMoved = true;
                         MoveCardOutputData moveCardOutputData = new MoveCardOutputData(true, 9);
                         moveCardPresenter.prepareSuccessView(moveCardOutputData);
-                    } else if (!game.getColumns().get(9).isEmpty() && card.getValue() == game.getColumns().get(9).get(0).getValue() + 1) {
+                    } else if (!game.getColumns().get(9).isEmpty() && card.getValue() == game.getColumns().get(9).get(game.getColumns().get(9).size() - 1).getValue() + 1) {
                         System.out.println("Add card to Spade Foundation");
                         canBeMoved = true;
                         MoveCardOutputData moveCardOutputData = new MoveCardOutputData(true, 9);
@@ -68,7 +68,7 @@ public class MoveCardInteractor implements MoveCardInputBoundary {
                         canBeMoved = true;
                         MoveCardOutputData moveCardOutputData = new MoveCardOutputData(true, 10);
                         moveCardPresenter.prepareSuccessView(moveCardOutputData);
-                    } else if (!game.getColumns().get(10).isEmpty() && card.getValue() == game.getColumns().get(10).get(0).getValue() + 1) {
+                    } else if (!game.getColumns().get(10).isEmpty() && card.getValue() == game.getColumns().get(10).get(game.getColumns().get(10).size() - 1).getValue() + 1) {
                         System.out.println("Add card to Diamond Foundation");
                         canBeMoved = true;
                         MoveCardOutputData moveCardOutputData = new MoveCardOutputData(true, 10);
@@ -83,7 +83,7 @@ public class MoveCardInteractor implements MoveCardInputBoundary {
                         canBeMoved = true;
                         MoveCardOutputData moveCardOutputData = new MoveCardOutputData(true, 11);
                         moveCardPresenter.prepareSuccessView(moveCardOutputData);
-                    } else if (!game.getColumns().get(11).isEmpty() && card.getValue() == game.getColumns().get(11).get(0).getValue() + 1) {
+                    } else if (!game.getColumns().get(11).isEmpty() && card.getValue() == game.getColumns().get(11).get(game.getColumns().get(11).size() - 1).getValue() + 1) {
                         System.out.println("Add card to Heart Foundation");
                         canBeMoved = true;
                         MoveCardOutputData moveCardOutputData = new MoveCardOutputData(true, 11);
