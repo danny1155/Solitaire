@@ -593,5 +593,19 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         timerLabel.setText("00:00:00");
     }
 
+    public HashMap<Integer, ArrayList<JLabel>> getMoveableCards(){
+        return moveableCards;
+    }
+
+    public HashMap<Integer, ArrayList<JLabel>> getImmoveableCards(){
+        return immoveableCards;
+    }
+    public boolean getIsDragged(){
+        return isDragged;
+    }
+
+    public JLabel getSelectedCard(){
+        return selectedCard;
+    }
 
 }

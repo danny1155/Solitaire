@@ -1,23 +1,14 @@
+package App;
+
 import View.HomeViewModel;
 import data_access.GameDataAccessObject;
-import entity.SinglePlayerGame;
-import entity.Game;
-import interface_adapter.MoveCard.MoveCardController;
-import interface_adapter.MoveCard.MoveCardPresenter;
 import interface_adapter.Setup.SetupViewModel;
-import use_case.move_card.MoveCardInputBoundary;
-import use_case.move_card.MoveCardInputData;
-import use_case.move_card.MoveCardInteractor;
-import use_case.move_card.MoveCardOutputBoundary;
-import use_case.setup_game.SetupInputData;
-import use_case.setup_game.SetupInteractor;
 import View.Gameview;
 import View.Homeview;
 import interface_adapter.ViewManagerModel;
 import View.ViewManager;
 
 import javax.swing.*;
-import java.util.Set;
 import java.awt.*;
 
 
