@@ -64,6 +64,7 @@ public class Card {
     public void showCard(){
         this.isShown = true;
     }
+    public void hideCard() {this.isShown = false;}
     public void selectCard(){
         this.isSelected = true;
     }
