@@ -106,7 +106,7 @@ public class SinglePlayerGame extends Game {
         HttpResponse<String> addToShownPileResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID + "/pile/shown_pile/add/?cards=" + shownCards);
 
         columns = new HashMap<>();
-        for (int i = 0; i < 12; i++){
+        for (int i = -1; i < 12; i++){
             columns.put(i, new ArrayList<>());
         }
         cardsInplay = new ArrayList<>();
@@ -131,7 +131,7 @@ public class SinglePlayerGame extends Game {
             System.out.println("Stack" + i +" :" + cardsInStack);
         }
         ArrayList<String> cardsInDeck = new ArrayList<>();
-        for (Card card : columns.get(0)){
+        for (Card card : columns.get(-1)){
             cardsInDeck.add(card.getName());
         }
         System.out.println("Deck: " + cardsInDeck);
@@ -197,7 +197,7 @@ public class SinglePlayerGame extends Game {
                 String cardName = value + color;
                 Card card = new Card(cardName);
                 cardsInplay.add(card);
-                columns.get(0).add(card);
+                columns.get(-1).add(card);
             }
         }
     }
@@ -209,7 +209,7 @@ public class SinglePlayerGame extends Game {
                 if (cardNames.get(i).equals(card.getName())) {
                     card.showCard();
                     card.moveCard(i + 1);
-                    columns.get(0).remove(card);
+                    columns.get(-1).remove(card);
                     columns.get(i + 1).add(card);
                     card.setIndex(columns.get(i + 1));
                 }
@@ -226,7 +226,7 @@ public class SinglePlayerGame extends Game {
             for (int i = columnIndex; i < columnIndex + numPerStack; i++) {
                 for (Card card : cardsInplay) {
                     if (cardNames.get(i).equals(card.getName())) {
-                        columns.get(0).remove(card);
+                        columns.get(-1).remove(card);
                         columns.get(columnInt).add(card);
                         card.moveCard(columnInt);
                         card.setIndex(columns.get(columnInt));
@@ -241,13 +241,13 @@ public class SinglePlayerGame extends Game {
 
     private void alocateDeck (String cardsInDeck){
         List<String> cardNames = Arrays.asList(cardsInDeck.split(","));
-        ArrayList<Card> copiedList = new ArrayList<>(columns.get(0));
-        columns.get(0).clear();
+        ArrayList<Card> copiedList = new ArrayList<>(columns.get(-1));
+        columns.get(-1).clear();
         for (String cardName : cardNames) {
             for (Card card : copiedList) {
                 if (cardName.equals(card.getName())) {
-                    columns.get(0).add(card);
-                    card.setIndex(columns.get(0));
+                    columns.get(-1).add(card);
+                    card.setIndex(columns.get(-1));
                 }
             }
         }
