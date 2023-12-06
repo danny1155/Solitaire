@@ -31,7 +31,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     private final JButton quit;
     private final JButton guest;
 
-    public SignupView(SignupController controller, SignupViewModel signupViewModel) {
+    public SignupView(ViewManagerModel viewManagerModel, SignupController controller, SignupViewModel signupViewModel, LoginViewModel loginViewModel, HomeViewModel homeViewModel) {
 
         this.signupController = controller;
         this.signupViewModel = signupViewModel;
@@ -67,36 +67,6 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                             signupController.execute(currState.getUsername(),
                                     currState.getPassword(),
                                     currState.getRepeatPassword());
-
-                            //JFrame application = new JFrame("Solitaire");
-                            //application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                            //application.setSize(1100,800);
-//
-                            //CardLayout cardLayout = new CardLayout();
-//
-                            //JPanel views = new JPanel(cardLayout);
-                            //application.add(views);
-//
-                            //ViewManagerModel viewManagerModel = new ViewManagerModel();
-                            //new ViewManager(views, cardLayout, viewManagerModel);
-//
-                            //final SetupInputBoundary setupInteractor = null;
-//
-                            //HomeViewModel homeViewModel = new HomeViewModel();
-                            //SetupViewModel setupViewModel = new SetupViewModel();
-                            //SignupViewModel signupViewModel = new SignupViewModel();
-                            //LoginViewModel loginViewModel = new LoginViewModel();
-                            //SetupController setupController = new SetupController(setupInteractor);
-//
-                            //Homeview homeView = new Homeview(homeViewModel,setupController);
-                            //views.add(homeView, homeView.viewName);
-//
-                            //viewManagerModel.setActiveView(homeView.viewName);
-                            //viewManagerModel.firePropertyChanged();
-//
-                            //homeView.setVisible(true);
-//
-                            //setVisible(false);
                         }
                     }
                 }
@@ -118,35 +88,10 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                 // This creates an anonymous subclass of ActionListener and instantiates it.
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
-                        //JFrame application = new JFrame("Solitaire");
-                        //application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                        //application.setSize(1100,800);
-
-                        CardLayout cardLayout = new CardLayout();
-//
-                        JPanel views = new JPanel(cardLayout);
-                        //application.add(views);
-
-                        ViewManagerModel viewManagerModel = new ViewManagerModel();
-                        new ViewManager(views, cardLayout, viewManagerModel);
-
-                        final SetupInputBoundary setupInteractor = null;
-
-                        HomeViewModel homeViewModel = new HomeViewModel();
-                        SetupViewModel setupViewModel = new SetupViewModel();
-                        SignupViewModel signupViewModel = new SignupViewModel();
-                        LoginViewModel loginViewModel = new LoginViewModel();
-                        SetupController setupController = new SetupController(setupInteractor);
-
-                        Homeview homeView = new Homeview(homeViewModel,setupController);
-                        views.add(homeView, homeView.viewName);
-
-                        viewManagerModel.setActiveView(homeView.viewName);
-                        viewManagerModel.firePropertyChanged();
-
-                        homeView.setVisible(true);
-
-                        setVisible(false);
+                        if (evt.getSource().equals(guest)) {
+                            viewManagerModel.setActiveView(homeViewModel.getViewName());
+                            viewManagerModel.firePropertyChanged();
+                        }
                     }
                 }
         );
