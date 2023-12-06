@@ -15,8 +15,8 @@ public class MoveCardController {
         this.moveCardInteractor = moveCardInteractor;
     }
 
-    public void execute(Point cardPoint, Card card) {
-        MoveCardInputData moveCardInputData = new MoveCardInputData(cardPoint, card);
+    public void execute(Point cardPoint, Card card, int numCardsMoved) {
+        MoveCardInputData moveCardInputData = new MoveCardInputData(cardPoint, card, numCardsMoved);
         moveCardInteractor.execute(moveCardInputData);
 
     }
