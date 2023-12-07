@@ -1,12 +1,10 @@
 package View;
 
-import data_access.GameDataAccessObject;
 import interface_adapter.*;
-import interface_adapter.Setup.SetupController;
-import interface_adapter.Setup.SetupViewModel;
-import use_case.SignupInputBoundary;
-import use_case.logInInputBoundary;
-import use_case.setup_game.SetupInputBoundary;
+import interface_adapter.Signup.SignupController;
+import interface_adapter.Signup.SignupState;
+import interface_adapter.Signup.SignupViewModel;
+import interface_adapter.Login.LoginViewModel;
 
 import javax.swing.*;
 import java.awt.*;

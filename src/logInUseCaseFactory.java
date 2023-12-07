@@ -1,13 +1,17 @@
 import View.HomeViewModel;
 import View.LoginView;
-import View.SignupView;
 import data_access.FileUserDataAccessObject;
 import data_access.UserLoginDataAccessInterface;
-import data_access.UserSignupDataAccessInterface;
 import entity.CommonUserFactory;
 import entity.UserFactory;
 import interface_adapter.*;
-import use_case.*;
+import interface_adapter.Signup.SignupViewModel;
+import interface_adapter.Login.LoginViewModel;
+import interface_adapter.Login.logInController;
+import interface_adapter.Login.logInPresenter;
+import use_case.login.logInInputBoundary;
+import use_case.login.logInInteractor;
+import use_case.login.logInOutputBoundary;
 
 import javax.swing.*;
 import java.io.IOException;

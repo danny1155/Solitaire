@@ -1,10 +1,10 @@
-package interface_adapter;
+package interface_adapter.Login;
 
-import use_case.logInOutputBoundary;
-import use_case.logInOutputData;
+import interface_adapter.Signup.SignupViewModel;
+import interface_adapter.ViewManagerModel;
+import use_case.login.logInOutputBoundary;
+import use_case.login.logInOutputData;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import View.HomeViewModel;
 
 public class logInPresenter implements logInOutputBoundary {

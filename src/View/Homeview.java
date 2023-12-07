@@ -68,6 +68,12 @@ public class Homeview extends JPanel implements ActionListener, PropertyChangeLi
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Check the Scoreboard");
+                setVisible(false);
+
+                //Create and display the Select Game Mode GUI
+                Scoreboardview scoreboardview = new Scoreboardview();
+                scoreboardview.setVisible(true);
+                System.out.println("hi");
             }
         });
 //        quitButton = new JButton("Quit");

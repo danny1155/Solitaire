@@ -1,6 +1,8 @@
 package View;
 
-import interface_adapter.*;
+import interface_adapter.Login.LoginState;
+import interface_adapter.Login.LoginViewModel;
+import interface_adapter.Login.logInController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,14 +52,17 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         logIn = new JButton(loginViewModel.LOGIN_BUTTON_LABEL);
         buttons.add(logIn);
 
+        logIn.addActionListener(this);
+
         logIn.addActionListener(
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent evt) {
                         if (evt.getSource().equals(logIn)) {
                             LoginState currState = loginViewModel.getState();
-                            loginController.execute(currState.getUsername(),
-                                    currState.getPassword());
+                            System.out.println(currState.getUsername());
+                            loginController.execute(currState.getUsername(), currState.getPassword());
+                            System.out.println(currState.getUsername());
                         }
                     }
                 }
@@ -93,6 +98,13 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     public void actionPerformed(ActionEvent evt) {
         System.out.println("Click " + evt.getActionCommand());
     }
+
+    public String getUsername(){
+        LoginState currState = loginViewModel.getState();
+        return currState.getUsername();
+    }
+
+
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {

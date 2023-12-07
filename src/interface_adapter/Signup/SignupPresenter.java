@@ -1,7 +1,10 @@
-package interface_adapter;
+package interface_adapter.Signup;
 
-import use_case.SignupOutputBoundary;
-import use_case.SignupOutputData;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.Login.LoginState;
+import interface_adapter.Login.LoginViewModel;
+import use_case.signup.SignupOutputBoundary;
+import use_case.signup.SignupOutputData;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
