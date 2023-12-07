@@ -395,6 +395,22 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         }
     }
 
+    public HashMap<Integer, ArrayList<JLabel>> getMoveableCards() {
+        return moveableCards;
+    }
+
+    public HashMap<Integer, ArrayList<JLabel>> getImmoveableCards() {
+        return immoveableCards;
+    }
+
+    public JLabel getSelectedCard() {
+        return selectedCard;
+    }
+
+    public boolean getIsDragged() {
+        return isDragged;
+    }
+
     private class ClickListener extends MouseAdapter {
         public void mousePressed(MouseEvent evt) {
 
