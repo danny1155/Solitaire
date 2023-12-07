@@ -1,3 +1,5 @@
+package App;
+
 import View.*;
 import data_access.GameDataAccessObject;
 import entity.SinglePlayerGame;
