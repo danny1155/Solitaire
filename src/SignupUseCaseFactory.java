@@ -1,3 +1,4 @@
+import View.HomeViewModel;
 import View.SignupView;
 import data_access.FileUserDataAccessObject;
 import data_access.UserSignupDataAccessInterface;
@@ -16,11 +17,11 @@ public class SignupUseCaseFactory {
     /** Prevent instantiation. */
     private SignupUseCaseFactory() {}
 
-    public static SignupView create(ViewManagerModel viewManagerModel, LoginViewModel loginViewModel, SignupViewModel signupViewModel) {
+    public static SignupView create(ViewManagerModel viewManagerModel, LoginViewModel loginViewModel, SignupViewModel signupViewModel, HomeViewModel homeViewModel) {
 
         try {
             SignupController signupController = createUserSignupUseCase(viewManagerModel, signupViewModel, loginViewModel);
-            return new SignupView(signupController, signupViewModel);
+            return new SignupView(viewManagerModel, signupController, signupViewModel, loginViewModel, homeViewModel);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not open user data file.");
         }
