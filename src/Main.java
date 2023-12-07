@@ -59,13 +59,13 @@ public class Main {
         Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(gameView, gameView.viewName);
 
-        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel);
+        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, homeViewModel);
         views.add(signupView, signupView.viewName);
 
         LoginView loginView = logInUseCaseFactory.create(viewManagerModel, homeViewModel, loginViewModel, signupViewModel);
-        views.add(signupView, loginView.viewName);
+        views.add(loginView, loginView.viewName);
 
-        viewManagerModel.setActiveView(loginView.viewName);
+        viewManagerModel.setActiveView(signupView.viewName);
         viewManagerModel.firePropertyChanged();
 
         //application.pack();

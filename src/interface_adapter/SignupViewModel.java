@@ -11,6 +11,7 @@ public class SignupViewModel extends ViewModel {
     public final String REPEAT_PASSWORD_LABEL = "Enter password again";
 
     public final String SIGNUP_BUTTON_LABEL = "Sign up";
+    public final String LOGIN_BUTTON_LABEL = "Log in";
     public final String CANCEL_BUTTON_LABEL = "Quit";
     public final String GUEST_BUTTON_LABEL = "Play As Guest";
 
