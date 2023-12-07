@@ -40,7 +40,6 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
     private int score;
     private int moves;
     private JPanel topPanel;
-//    private JPanel foundationPanel;
     private java.util.List<String> shownCardsImage;
     private int numShownCards;
     private final SetupViewModel setupViewModel;
@@ -303,7 +302,6 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
         foundationLabel.setBounds(880, y * 150, 100, 140);
         moveableCards.put(y+8, new ArrayList<>());
         immoveableCards.put(y+8, new ArrayList<>());
-        //immoveableCards.get(y+8).add(foundationLabel);
         panel.add(foundationLabel, 0);
     }
 
@@ -409,6 +407,10 @@ public class Gameview extends JPanel implements ActionListener, PropertyChangeLi
 
     public boolean getIsDragged() {
         return isDragged;
+    }
+
+    public List<JLabel> getListCardsDrawn(){
+        return listCardsDrawn;
     }
 
     private class ClickListener extends MouseAdapter {

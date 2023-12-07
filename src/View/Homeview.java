@@ -38,7 +38,6 @@ public class Homeview extends JPanel implements ActionListener, PropertyChangeLi
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Initializing the game");
                 //Hide Homeview
                 setVisible(false);
                 // SetupState currentState = setupViewModel.getState();
@@ -52,7 +51,6 @@ public class Homeview extends JPanel implements ActionListener, PropertyChangeLi
         setGameModeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Select your Game Mode");
                 //Hide Homeview
                 setVisible(false);
 

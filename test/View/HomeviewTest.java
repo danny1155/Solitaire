@@ -116,27 +116,28 @@ public class HomeviewTest {
         return gv;
     }
 
-//    @org.junit.Test
-//    public void getSelectGameModeView(){
-//        Main.main(null);
-//        JButton guest = getGuestButtons();
-//        guest.doClick();;
-//        JButton playbutton = getSelectGameModeButton();
-//        playbutton.doClick();
-//        JFrame app = null;
-//        Window[] windows = Window.getWindows();
-//        for (Window window : windows) {
-//            if (window instanceof JFrame) {
-//                app = (JFrame) window;
-//            }
-//        }
+    @org.junit.Test
+    public void getSelectGameModeView(){
+        Main.main(null);
+        JButton guest = getGuestButtons();
+        guest.doClick();;
+        JButton playbutton = getSelectGameModeButton();
+        playbutton.doClick();
+        JFrame app = null;
+        Window[] windows = Window.getWindows();
+        for (Window window : windows) {
+            if (window instanceof JFrame) {
+                app = (JFrame) window;
+            }
+        }
+        assertNotNull(app);
 //        Component root = app.getComponent(0);
 //        Component cp = ((JRootPane) root).getContentPane();
 //        JPanel jp = (JPanel) cp;
 //        JPanel jp2 = (JPanel) jp.getComponent(0);
 //        Gameview gv = (Gameview) jp2.getComponent(2);
 //        assert (gv instanceof Gameview);
-//    }
+    }
 
 
 
