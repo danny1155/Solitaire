@@ -1,6 +1,7 @@
 package interface_adapter.Setup;
 
 import entity.Card;
+import entity.Strategy;
 
 import javax.swing.*;
 import java.awt.*;
