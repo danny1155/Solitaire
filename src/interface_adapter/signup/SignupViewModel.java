@@ -1,4 +1,4 @@
-package interface_adapter.Signup;
+package interface_adapter.signup;
 
 import interface_adapter.ViewModel;
 
@@ -7,15 +7,16 @@ import java.beans.PropertyChangeSupport;
 
 public class SignupViewModel extends ViewModel {
 
-    public final String TITLE_LABEL = "Sign Up View";
-    public final String USERNAME_LABEL = "Choose username";
-    public final String PASSWORD_LABEL = "Choose password";
-    public final String REPEAT_PASSWORD_LABEL = "Enter password again";
+    public static final String CLEAR_BUTTON_LABEL = "Clear";
+    public static final String TITLE_LABEL = "Sign Up View";
+    public static final String USERNAME_LABEL = "Choose username";
+    public static final String PASSWORD_LABEL = "Choose password";
+    public static final String REPEAT_PASSWORD_LABEL = "Enter password again";
+    public static final String LOGIN_BUTTON_LABEL = "log in";
+    public static final String GUEST_BUTTON_LABEL = "play as guest";
 
-    public final String SIGNUP_BUTTON_LABEL = "Sign up";
-    public final String LOGIN_BUTTON_LABEL = "Log in";
-    public final String CANCEL_BUTTON_LABEL = "Quit";
-    public final String GUEST_BUTTON_LABEL = "Play As Guest";
+    public static final String SIGNUP_BUTTON_LABEL = "Sign up";
+    public static final String CANCEL_BUTTON_LABEL = "Cancel";
 
     private SignupState state = new SignupState();
 
