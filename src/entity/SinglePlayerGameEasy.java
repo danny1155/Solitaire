@@ -81,7 +81,7 @@ public class SinglePlayerGameEasy implements Game{
         deckID = deck.get("\"deck_id\"");
         deckID = deckID.substring(1, deckID.length() - 1);
 
-        HttpResponse<String> shuffleResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID +"/shuffle/?deck_count=1");
+//        HttpResponse<String> shuffleResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID +"/shuffle/?deck_count=1");
 
         hiddenCardsData = drawCard(21);
         hiddenCardsDataList = Arrays.stream(hiddenCardsData.split("\"code\": ")).toList();

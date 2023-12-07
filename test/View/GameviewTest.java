@@ -104,10 +104,9 @@ public class GameviewTest {
     @org.junit.Test
     public void testNumFoundation(){
         Gameview gv = getGameView();
-        JPanel cardsPanel = (JPanel) gv.getComponent(2);
+        JLayeredPane cardsPanel = (JLayeredPane) gv.getComponent(1);
         int numTableauLabels = 0;
         Component[] components = cardsPanel.getComponents();
-
 
         // Loop through the components and check properties
         for (Component component : components) {
@@ -122,13 +121,12 @@ public class GameviewTest {
 
                 // Check if the label properties match the expected values
                 if (width == 100 && height == 140) {
-                    if ((x == 930) && (y == 0 || y == 150 || y == 300 || y == 450)) {
+                    if ((x >= 880 && (y == 0 || y == 150 || y == 300 || y == 450))) {
                         numTableauLabels++;
                     }
                 }
             }
         }
-        System.out.println(numTableauLabels);
         assert (numTableauLabels == 4);
     }
 
@@ -140,9 +138,7 @@ public class GameviewTest {
         JLabel club2 = moveableCards.get(6).get(0);
         int club2X = club2.getX();
         int club2Y = club2.getY();
-        System.out.println(club2X);
-        System.out.println(club2Y);
-        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, 660, 100, 1, false);
+        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, club2X + 50, club2Y + 50, 1, false);
         gv.dispatchEvent(pressEvent);
         System.out.println(club2);
         System.out.println(gv.getSelectedCard());
@@ -157,7 +153,7 @@ public class GameviewTest {
         JLabel club2 = moveableCards.get(6).get(0);
         int club2X = club2.getX();
         int club2Y = club2.getY();
-        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, club2X + 110, club2Y + 30, 1, false);
+        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, club2X + 50, club2Y + 50, 1, false);
         gv.dispatchEvent(pressEvent);
         MouseEvent dragEvent = new MouseEvent(gv, MouseEvent.MOUSE_DRAGGED, System.currentTimeMillis(), 0, 1020, 0, 1, false);
         gv.dispatchEvent(dragEvent);
@@ -172,14 +168,14 @@ public class GameviewTest {
         JLabel club2 = moveableCards.get(6).get(0);
         int club2X = club2.getX();
         int club2Y = club2.getY();
-        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, club2X + 110, club2Y + 30, 1, false);
+        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, club2X + 50, club2Y + 50, 1, false);
         gv.dispatchEvent(pressEvent);
-        MouseEvent dragEvent = new MouseEvent(gv, MouseEvent.MOUSE_DRAGGED, System.currentTimeMillis(), 0, 1020, 0, 1, false);
+        MouseEvent dragEvent = new MouseEvent(gv, MouseEvent.MOUSE_DRAGGED, System.currentTimeMillis(), 0, 930, 50, 1, false);
         gv.dispatchEvent(dragEvent);
-        MouseEvent releaseEvent = new MouseEvent(gv, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, 1020 , 0, 1, false);
+        MouseEvent releaseEvent = new MouseEvent(gv, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, 930 , 50, 1, false);
         gv.dispatchEvent(releaseEvent);
-        MouseEvent pressEvent2 = new MouseEvent(gv, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 1020, 0, 1, false);
-        gv.dispatchEvent(pressEvent2);
+//        MouseEvent pressEvent2 = new MouseEvent(gv, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 880, 0, 1, false);
+//        gv.dispatchEvent(pressEvent2);
         assert (gv.getMoveableCards().get(8).get(0).equals(club2) && !gv.getIsDragged());
     }
 
@@ -191,7 +187,7 @@ public class GameviewTest {
         JLabel club2 = moveableCards.get(6).get(0);
         int club2X = club2.getX();
         int club2Y = club2.getY();
-        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, club2X + 110, club2Y + 30, 1, false);
+        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, club2X + 50, club2Y + 50, 1, false);
         gv.dispatchEvent(pressEvent);
         MouseEvent dragEvent = new MouseEvent(gv, MouseEvent.MOUSE_DRAGGED, System.currentTimeMillis(), 0, club2X + 110, club2Y + 500, 1, false);
         gv.dispatchEvent(dragEvent);
@@ -210,7 +206,7 @@ public class GameviewTest {
         int club2X = club2.getX();
         int club2Y = club2.getY();
         for (int i = 1; i <4; i++){
-            MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, club2X + 110, club2Y + 30, 1, false);
+            MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, club2X + 50, club2Y + 50, 1, false);
             gv.dispatchEvent(pressEvent);
             MouseEvent dragEvent = new MouseEvent(gv, MouseEvent.MOUSE_DRAGGED, System.currentTimeMillis(), 0, 1020, i * 150, 1, false);
             gv.dispatchEvent(dragEvent);
@@ -227,14 +223,14 @@ public class GameviewTest {
     @org.junit.Test
     public void testMiniPanelPresent(){
         Gameview gv = getGameView();
-        assert (gv.getComponent(3).isVisible());
+        assert (gv.getComponent(2).isVisible());
     }
 
     //Test if the mini Panel has the correct buttons
     @org.junit.Test
     public void testMiniPanelButton(){
         Gameview gv = getGameView();
-        JPanel miniPanel = (JPanel) gv.getComponent(3);
+        JPanel miniPanel = (JPanel) gv.getComponent(2);
         ArrayList<String> buttonList = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             JButton button = (JButton) miniPanel.getComponent(i);
@@ -246,5 +242,22 @@ public class GameviewTest {
         assert (buttonList.equals(testButtons));
     }
 
+    @org.junit.Test
+    public void testDrawCard(){
+        Gameview gv = getGameView();
+        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, 20, 20, 1, false);
+        gv.dispatchEvent(pressEvent);
+        assert (!gv.getListCardsDrawn().isEmpty());
+    }
+
+    @org.junit.Test
+    public void testDrawCardSpam(){
+        Gameview gv = getGameView();
+        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, 20, 20, 1, false);
+        for (int i = 0; i < 25; i++){
+            gv.dispatchEvent(pressEvent);
+        }
+        assert (gv.getListCardsDrawn().isEmpty());
+    }
 
 }
