@@ -116,18 +116,27 @@ public class HomeviewTest {
         return gv;
     }
 
-//    @org.junit.Test
-//    public void getSelectGameModeView(){
-//        Main.main(null);
-//        JButton guest = getGuestButtons();
-//        guest.doClick();;
-//        JButton playbutton = getSelectGameModeButton();
-//        playbutton.doClick();
-//        JFrame app = null;
-//        Window[] windows = Window.getWindows();
-//        for (Window window : windows) {
-//            if (window instanceof JFrame) {
-//                app = (JFrame) window;
+    @org.junit.Test
+    public void getSelectGameModeView(){
+        Main.main(null);
+        JButton guest = getGuestButtons();
+        guest.doClick();;
+        JButton playbutton = getSelectGameModeButton();
+        playbutton.doClick();
+        JFrame app = null;
+        Window[] windows = Window.getWindows();
+        for (Window window : windows) {
+            if (window instanceof JFrame) {
+                app = (JFrame) window;
+            }
+        }
+        assert (app instanceof SelectGameModeView);
+//        ArrayList<String> buttonList = new ArrayList<>();
+//        JPanel panel = (JPanel) app.getComponent(0);
+//        Component[] components = panel.getComponents();
+//        for (Component component : components){
+//            if (component instanceof JButton){
+//                buttonList.add(((JButton) component).getText());
 //            }
 //        }
 //        Component root = app.getComponent(0);
@@ -136,7 +145,7 @@ public class HomeviewTest {
 //        JPanel jp2 = (JPanel) jp.getComponent(0);
 //        Gameview gv = (Gameview) jp2.getComponent(2);
 //        assert (gv instanceof Gameview);
-//    }
+    }
 
 
 
