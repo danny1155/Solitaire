@@ -18,6 +18,8 @@ public class SetupPresenter implements SetupOutputBoundary{
     public void prepareSuccessView(SetupOutputData game) {
         SetupState setupState = setupViewModel.getState();
         System.out.println(game.getListCardImage());
+        setupState.setScore(0);
+        setupState.setMoves(0);
         setupState.setCurrentlyShownCardsImage(game.getListCardImage());
         setupState.setColumns(game.getCardsShown1()); //map of card objects in columns
         setupState.setIsNewGame(true);
