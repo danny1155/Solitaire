@@ -3,7 +3,6 @@ package App;
 import View.Gameview;
 import View.HomeViewModel;
 import data_access.GameDataAccessObject;
-import entity.Game;
 import interface_adapter.MoveCard.MoveCardController;
 import interface_adapter.MoveCard.MoveCardPresenter;
 import interface_adapter.Setup.SetupController;

@@ -1,12 +1,11 @@
 package use_case.setup_game;
 
 import data_access.GameDataAccessObject;
-import entity.Game;
-import entity.SinglePlayerGame;
-import entity.Card;
+import entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SetupInteractor implements SetupInputBoundary{
 
@@ -18,7 +17,15 @@ public class SetupInteractor implements SetupInputBoundary{
         this.setupPresenter = setupOutputBoundary;
     }
     public void execute(SetupInputData setupInputData) {
-        Game game = new SinglePlayerGame();
+        GameCreator gameCreator;
+        if (Objects.equals(setupInputData.getGameMode(), "SinglePlayerGameEasy")) {
+            gameCreator = new SinglePlayerGameEasyCreator();
+        } else if (Objects.equals(setupInputData.getGameMode(), "SinglePlayerGameHard")) {
+            gameCreator = new SinglePlayerGameHardCreator();
+        } else {
+            gameCreator = new LimitlessTimeGameCreator();
+        }
+        Game game = gameCreator.createGame();
         gameDataAccessObject.addGame(game);
         //Game game = gameDataAccessObject.getGame(1);
         List<String> listShownCardImage = new ArrayList<>();
