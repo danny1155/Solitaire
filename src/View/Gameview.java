@@ -1,7 +1,6 @@
 package View;
 
 import entity.Card;
-import entity.SinglePlayerGame;
 import interface_adapter.MoveCard.MoveCardController;
 import interface_adapter.Setup.SetupController;
 import interface_adapter.Setup.SetupViewModel;
@@ -14,14 +13,12 @@ import interface_adapter.Drawcard.DrawcardViewModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.event.*;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
 import java.net.URL;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
@@ -32,6 +29,7 @@ import javax.swing.JOptionPane;
 
 public class Gameview extends JPanel implements ActionListener, PropertyChangeListener{
     public final String viewName = "setup";
+
     private JLayeredPane cardsPanel;
     private JLabel timerLabel;
     private JLabel scoreLabel;

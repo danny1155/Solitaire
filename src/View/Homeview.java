@@ -43,7 +43,7 @@ public class Homeview extends JPanel implements ActionListener, PropertyChangeLi
                 setVisible(false);
                 // SetupState currentState = setupViewModel.getState();
                 System.out.println("1");
-                setupController.execute("SinglePlayerGame");
+                setupController.execute("SinglePlayerGameEasy");
             }
         });
 
