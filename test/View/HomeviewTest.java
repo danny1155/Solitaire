@@ -130,7 +130,15 @@ public class HomeviewTest {
                 app = (JFrame) window;
             }
         }
-        assertNotNull(app);
+        assert (app instanceof SelectGameModeView);
+//        ArrayList<String> buttonList = new ArrayList<>();
+//        JPanel panel = (JPanel) app.getComponent(0);
+//        Component[] components = panel.getComponents();
+//        for (Component component : components){
+//            if (component instanceof JButton){
+//                buttonList.add(((JButton) component).getText());
+//            }
+//        }
 //        Component root = app.getComponent(0);
 //        Component cp = ((JRootPane) root).getContentPane();
 //        JPanel jp = (JPanel) cp;
