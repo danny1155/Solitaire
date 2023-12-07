@@ -1,3 +1,5 @@
+package App;
+
 import View.HomeViewModel;
 import View.SignupView;
 import data_access.FileUserDataAccessObject;

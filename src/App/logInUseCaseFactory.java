@@ -1,3 +1,5 @@
+package App;
+
 import View.HomeViewModel;
 import View.LoginView;
 import View.SignupView;
