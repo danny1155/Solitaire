@@ -260,4 +260,25 @@ public class GameviewTest {
         assert (gv.getListCardsDrawn().isEmpty());
     }
 
+    @org.junit.Test
+    public void testDrawnCardtoFoundation(){
+        Gameview gv = getGameView();
+        MouseEvent pressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, 20, 20, 1, false);
+        for (int i = 0; i < 13; i++){
+            gv.dispatchEvent(pressEvent);
+        }
+//        assert (!gv.getListCardsDrawn().isEmpty());
+        JLabel heartA = gv.getListCardsDrawn().get(gv.getListCardsDrawn().size()-1);
+        MouseEvent newPressEvent = new MouseEvent(gv, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, 20, 200, 1, false);
+        gv.dispatchEvent(newPressEvent);
+        assert (gv.getSelectedCard().equals(heartA));
+        MouseEvent dragEvent = new MouseEvent(gv, MouseEvent.MOUSE_DRAGGED, System.currentTimeMillis(), 0, 930, 500, 1, false);
+        gv.dispatchEvent(dragEvent);
+        MouseEvent releaseEvent = new MouseEvent(gv, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, 930, 500, 1, false);
+        gv.dispatchEvent(releaseEvent);
+        System.out.println(heartA);
+        System.out.println();
+        assert (gv.getMoveableCards().get(11).get(0).equals(heartA) && !gv.getIsDragged());
+    }
+
 }
