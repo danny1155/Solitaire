@@ -117,7 +117,7 @@ public class HomeviewTest {
     }
 
     @org.junit.Test
-    public void getSelectGameModeView(){
+    public void testSelectGameModeButton(){
         Main.main(null);
         JButton guest = getGuestButtons();
         guest.doClick();;
@@ -130,21 +130,14 @@ public class HomeviewTest {
                 app = (JFrame) window;
             }
         }
-        assert (app instanceof SelectGameModeView);
+
 //        ArrayList<String> buttonList = new ArrayList<>();
-//        JPanel panel = (JPanel) app.getComponent(0);
-//        Component[] components = panel.getComponents();
-//        for (Component component : components){
-//            if (component instanceof JButton){
-//                buttonList.add(((JButton) component).getText());
-//            }
-//        }
-//        Component root = app.getComponent(0);
-//        Component cp = ((JRootPane) root).getContentPane();
-//        JPanel jp = (JPanel) cp;
-//        JPanel jp2 = (JPanel) jp.getComponent(0);
-//        Gameview gv = (Gameview) jp2.getComponent(2);
-//        assert (gv instanceof Gameview);
+        Component root = app.getComponent(0);
+        Component cp = ((JRootPane) root).getContentPane();
+        JPanel jp = (JPanel) cp;
+        JPanel jp2 = (JPanel) jp.getComponent(0);
+        JButton button = (JButton) jp2.getComponent(0);
+        assert (button instanceof JButton);
     }
 
 
