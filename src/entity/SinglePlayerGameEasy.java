@@ -1,5 +1,7 @@
 package entity;
 
+import use_case.move_card.MoveCardOutputData;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -7,7 +9,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
 
-public class SinglePlayerGame extends Game {
+public class SinglePlayerGameEasy implements Game{
+    private Strategy strategy;
     private boolean paused;
     private GameState gameState;
     private String deckID;
@@ -18,11 +21,23 @@ public class SinglePlayerGame extends Game {
     private ArrayList<Card> cardsInplay;
     private Map<Integer, ArrayList<Card>> columns;
     //ArrayList<Card> columns;
-    public SinglePlayerGame() {
+    public SinglePlayerGameEasy() {
         this.paused = false;
         setUpGame();
         this.gameState = new GameState(shownCards);
     }
+
+    @Override
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
+    }
+
+    @Override
+    public MoveCardOutputData executeStrategy() {
+        System.out.println("strategy");
+        return this.strategy.execute();
+    }
+
     @Override
     public void pauseGame() {
 
@@ -66,7 +81,7 @@ public class SinglePlayerGame extends Game {
         deckID = deck.get("\"deck_id\"");
         deckID = deckID.substring(1, deckID.length() - 1);
 
-        HttpResponse<String> shuffleResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID +"/shuffle/?deck_count=1");
+//        HttpResponse<String> shuffleResponse = getHttpResponse("https://www.deckofcardsapi.com/api/deck/" + deckID +"/shuffle/?deck_count=1");
 
         hiddenCardsData = drawCard(21);
         hiddenCardsDataList = Arrays.stream(hiddenCardsData.split("\"code\": ")).toList();

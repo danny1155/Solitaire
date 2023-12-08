@@ -28,6 +28,8 @@ public class MoveCardPresenter implements MoveCardOutputBoundary {
 //        }
         //setupState.setCurrentlyShownCardsImage(game.getListCardImage());
         //setupState.setColumns(game.getCardsShown1()); //map of card objects in columns
+        setupState.addScoreBy(game.getScoreChange());
+        setupState.incrementMove();
         setupViewModel.setState(setupState);
         setupViewModel.firePropertyChanged();
         viewManagerModel.setActiveView(setupViewModel.getViewName());

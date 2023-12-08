@@ -1,9 +1,9 @@
 package data_access;
 
 import entity.Game;
+import entity.GameCreator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class GameDataAccessObject {
     private final ArrayList<Game> games = new ArrayList<>();

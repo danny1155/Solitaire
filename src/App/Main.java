@@ -1,6 +1,7 @@
 package App;
 
 import View.*;
+
 import data_access.FileUserDataAccessObject;
 import data_access.GameDataAccessObject;
 import entity.CommonUserFactory;
@@ -13,6 +14,7 @@ import interface_adapter.logged_in.LoggedInViewModel;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+
 
 
 public class Main {
@@ -40,6 +42,7 @@ public class Main {
         SetupViewModel setupViewModel = new SetupViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
+
         FileUserDataAccessObject userDataAccessObject;
         try {
             userDataAccessObject = new FileUserDataAccessObject("./users.csv", new CommonUserFactory());
@@ -48,17 +51,21 @@ public class Main {
         }
 
 
+
         Homeview homeView = SetupUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(homeView, homeView.viewName);
+
 
 
         Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(gameView, gameView.viewName);
 
+
         SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDataAccessObject);
         views.add(signupView, signupView.viewName);
 
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, homeViewModel, userDataAccessObject);
+
         views.add(loginView, loginView.viewName);
 
         viewManagerModel.setActiveView(signupView.viewName);

@@ -1,6 +1,7 @@
 package interface_adapter.Setup;
 
 import entity.Card;
+import entity.Strategy;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 public class SetupState {
-    private int score;
+    private int score = 0;
     private List<Duration> time;
-    private int numMoves;
+    private int numMoves = 0;
     private List<String> currentlyShownCardsImage;
     private String gameMode;
     private Map<Integer, ArrayList<Card>> columns;
@@ -41,6 +42,8 @@ public class SetupState {
     public void setCurrentlyShownCardsImage(List<String> currentlyShownCardsImage) {
         this.currentlyShownCardsImage = currentlyShownCardsImage;
     }
+    public void setScore(int score) {this.score = score;}
+    public void setMoves(int moves) {this.numMoves = moves;}
     public void setMovedColumn(int movedColumn) {
         this.movedColumn = movedColumn;
     }
@@ -77,4 +80,13 @@ public class SetupState {
     }
     public void setIsNewGame(boolean isNewGame) {this.isNewGame = isNewGame;}
     public boolean getIsNewGame() {return this.isNewGame;}
+    public void addScoreBy(int scoreChange) {
+        score += scoreChange;
+        if (score < 0) {
+            score = 0;
+        }
+    }
+    public int getScore() {return score;}
+    public void incrementMove() {numMoves++;}
+    public int getNumMoves() {return numMoves;}
 }
