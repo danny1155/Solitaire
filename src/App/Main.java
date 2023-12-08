@@ -40,7 +40,6 @@ public class Main {
         SetupViewModel setupViewModel = new SetupViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
-        LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         FileUserDataAccessObject userDataAccessObject;
         try {
             userDataAccessObject = new FileUserDataAccessObject("./users.csv", new CommonUserFactory());
@@ -52,11 +51,6 @@ public class Main {
         Homeview homeView = SetupUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(homeView, homeView.viewName);
 
-//        MoveCardOutputBoundary moveCardOutputBoundary = new MoveCardPresenter(viewManagerModel, setupViewModel);
-//
-//        MoveCardInputBoundary moveCardInteractor = new MoveCardInteractor(moveCardOutputBoundary, game);
-//
-//        MoveCardController moveCardController = new MoveCardController(moveCardInteractor);
 
         Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(gameView, gameView.viewName);
