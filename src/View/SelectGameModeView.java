@@ -1,5 +1,4 @@
 package View;
-import interface_adapter.ViewManagerModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,25 +9,38 @@ public class SelectGameModeView extends JFrame {
 
     public SelectGameModeView() {
         setTitle("Game Mode Selector");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set to DISPOSE_ON_CLOSE
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(300, 200);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(4, 1)); // Four components: three buttons and a "Back" button
 
-        JButton easyModeButton = new JButton("SinglePlayer Mode");
-        JButton mediumModeButton = new JButton("MultiPlayer Mode");
-        JButton hardModeButton = new JButton("Some Mode");
+        JButton easyModeButton = new JButton("SinglePlayer Easy");
+        JButton mediumModeButton = new JButton("SinglePlayer Hard");
+        JButton hardModeButton = new JButton("Limitless Time");
+//        JButton backButton = new JButton("Back");
 
         easyModeButton.addActionListener(new ButtonClickListener(1));
         mediumModeButton.addActionListener(new ButtonClickListener(2));
         hardModeButton.addActionListener(new ButtonClickListener(3));
+//        backButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                // Code to navigate back to HomeView or any other view
+//                // For demonstration, let's assume there's a HomeView class
+//                dispose(); // Close Gameview
+//                Homeview homeview = new Homeview();
+//                homeview.setVisible(true); // Assuming HomeView has a default constructor to display the view
+//            }
+//        });
 
         panel.add(easyModeButton);
         panel.add(mediumModeButton);
         panel.add(hardModeButton);
+//        panel.add(backButton);
 
         setSize(500, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         add(panel);
@@ -45,15 +57,15 @@ public class SelectGameModeView extends JFrame {
         public void actionPerformed(ActionEvent e) {
             switch (selectedMode) {
                 case 1:
-                    JOptionPane.showMessageDialog(null, "Starting SinglePlayer Mode...");
+                    JOptionPane.showMessageDialog(null, "Starting SinglePlayer Easy Mode...");
                     // Add your logic for the easy mode here
                     break;
                 case 2:
-                    JOptionPane.showMessageDialog(null, "Starting Multiplayer Mode...");
+                    JOptionPane.showMessageDialog(null, "Starting SinglePlayer Hard Mode...");
                     // Add your logic for the medium mode here
                     break;
                 case 3:
-                    JOptionPane.showMessageDialog(null, "Starting Some Mode...");
+                    JOptionPane.showMessageDialog(null, "Starting Limitless Time Mode...");
                     // Add your logic for the hard mode here
                     break;
                 default:
@@ -69,7 +81,9 @@ public class SelectGameModeView extends JFrame {
         });
     }
 
-    public static void main(String[] args) {
-        displayGameModeSelector();
-    }
+    //public static void main(String[] args) {
+    //    displayGameModeSelector();
+    //}
+
+
 }
