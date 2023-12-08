@@ -1,20 +1,19 @@
-package use_case;
+package use_case.signup;
 
-import data_access.UserSignupDataAccessInterface;
 import entity.User;
 import entity.UserFactory;
 
 import java.time.LocalDateTime;
 
 public class SignupInteractor implements SignupInputBoundary {
-    final UserSignupDataAccessInterface userDataAccessObject;
+    final SignupUserDataAccessInterface userDataAccessObject;
     final SignupOutputBoundary userPresenter;
     final UserFactory userFactory;
 
-    public SignupInteractor(UserSignupDataAccessInterface userSignupDataAccessInterface,
+    public SignupInteractor(SignupUserDataAccessInterface signupDataAccessInterface,
                             SignupOutputBoundary signupOutputBoundary,
                             UserFactory userFactory) {
-        this.userDataAccessObject = userSignupDataAccessInterface;
+        this.userDataAccessObject = signupDataAccessInterface;
         this.userPresenter = signupOutputBoundary;
         this.userFactory = userFactory;
     }

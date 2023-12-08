@@ -1,11 +1,11 @@
-package use_case;
+package use_case.login;
 
-public class logInOutputData {
+public class LoginOutputData {
+
     private final String username;
-
     private boolean useCaseFailed;
 
-    public logInOutputData(String username, boolean useCaseFailed) {
+    public LoginOutputData(String username, boolean useCaseFailed) {
         this.username = username;
         this.useCaseFailed = useCaseFailed;
     }
@@ -13,6 +13,5 @@ public class logInOutputData {
     public String getUsername() {
         return username;
     }
-
 
 }

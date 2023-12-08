@@ -1,14 +1,20 @@
 package App;
 
 import View.*;
+
+import data_access.FileUserDataAccessObject;
 import data_access.GameDataAccessObject;
-import interface_adapter.LoginViewModel;
+import entity.CommonUserFactory;
+import interface_adapter.login.LoginViewModel;
 import interface_adapter.Setup.SetupViewModel;
-import interface_adapter.SignupViewModel;
+import interface_adapter.signup.SignupViewModel;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.logged_in.LoggedInViewModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+
 
 
 public class Main {
@@ -37,23 +43,29 @@ public class Main {
         SignupViewModel signupViewModel = new SignupViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
 
+        FileUserDataAccessObject userDataAccessObject;
+        try {
+            userDataAccessObject = new FileUserDataAccessObject("./users.csv", new CommonUserFactory());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
 
         Homeview homeView = SetupUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(homeView, homeView.viewName);
 
-//        MoveCardOutputBoundary moveCardOutputBoundary = new MoveCardPresenter(viewManagerModel, setupViewModel);
-//
-//        MoveCardInputBoundary moveCardInteractor = new MoveCardInteractor(moveCardOutputBoundary, game);
-//
-//        MoveCardController moveCardController = new MoveCardController(moveCardInteractor);
+
 
         Gameview gameView = SetupGameUseCaseFactory.create(viewManagerModel, homeViewModel, setupViewModel, gameDataAccessObject);
         views.add(gameView, gameView.viewName);
 
-        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, homeViewModel);
+
+        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDataAccessObject);
         views.add(signupView, signupView.viewName);
 
-        LoginView loginView = logInUseCaseFactory.create(viewManagerModel, homeViewModel, loginViewModel, signupViewModel);
+        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, homeViewModel, userDataAccessObject);
+
         views.add(loginView, loginView.viewName);
 
         viewManagerModel.setActiveView(signupView.viewName);

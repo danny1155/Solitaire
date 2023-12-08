@@ -2,6 +2,8 @@ package data_access;
 
 import entity.User;
 import entity.UserFactory;
+import use_case.login.LoginUserDataAccessInterface;
+import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -9,8 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class
-FileUserDataAccessObject implements UserSignupDataAccessInterface, UserLoginDataAccessInterface {
+public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface {
 
     private final File csvFile;
 
@@ -35,7 +36,7 @@ FileUserDataAccessObject implements UserSignupDataAccessInterface, UserLoginData
             try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
                 String header = reader.readLine();
 
-
+                // For later: clean this up by creating a new Exception subclass and handling it in the UI.
                 assert header.equals("username,password,creation_time");
 
                 String row;
@@ -58,6 +59,11 @@ FileUserDataAccessObject implements UserSignupDataAccessInterface, UserLoginData
         this.save();
     }
 
+    @Override
+    public User get(String username) {
+        return accounts.get(username);
+    }
+
     private void save() {
         BufferedWriter writer;
         try {
@@ -66,7 +72,7 @@ FileUserDataAccessObject implements UserSignupDataAccessInterface, UserLoginData
             writer.newLine();
 
             for (User user : accounts.values()) {
-                String line = "%s,%s,%s".formatted(
+                String line = String.format("%s,%s,%s",
                         user.getName(), user.getPassword(), user.getCreationTime());
                 writer.write(line);
                 writer.newLine();
