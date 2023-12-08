@@ -1,3 +1,5 @@
+package App;
+
 import View.HomeViewModel;
 import View.Homeview;
 import data_access.GameDataAccessObject;

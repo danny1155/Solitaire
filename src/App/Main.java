@@ -1,9 +1,9 @@
+package App;
+
 import View.*;
 import data_access.FileUserDataAccessObject;
 import data_access.GameDataAccessObject;
-import data_access.LoginUserDataAccessInterface;
 import entity.CommonUserFactory;
-import entity.User;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.Setup.SetupViewModel;
 import interface_adapter.signup.SignupViewModel;
